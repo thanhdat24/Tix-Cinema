@@ -1,7 +1,11 @@
 import { Fragment } from "react";
 import { Route } from "react-router";
+import Footer from "./Layout/Footer/Footer";
+import Header from "./Layout/Header/Header";
+import HomeCarousel from "./Layout/HomeCarousel/HomeCarousel";
 
-export const HomeTemplate = (props) => {// path, exact: Xác định đường dẫn, component
+export const HomeTemplate = (props) => {
+  // path, exact: Xác định đường dẫn, component
   const { Component, ...restProps } = props;
 
   return (
@@ -11,12 +15,10 @@ export const HomeTemplate = (props) => {// path, exact: Xác định đường d
         // props.location, props.history, props.match
         return (
           <Fragment>
-            <h1 className="bg-black h-10 text-white">Đây là header homepage</h1>
+            <Header {...propsRoute} />
+            <HomeCarousel {...propsRoute} />
             <Component {...propsRoute} />
-
-            <footer className="bg-black h-10 text-white">
-              Đây là footer homepage
-            </footer>
+            <Footer />
           </Fragment>
         );
       }}
