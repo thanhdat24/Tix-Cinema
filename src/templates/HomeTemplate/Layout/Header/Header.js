@@ -5,7 +5,7 @@ export default function Header(props) {
   return (
     <header className="dark:bg-coolGray-800 dark:text-coolGray-100 bg-white fixed w-full z-10">
       <div className="container flex justify-between h-16 mx-auto">
-        <a href="#" aria-label="Back to homepage" class="flex items-center">
+        <a href="#" aria-label="Back to homepage" className="flex items-center">
           <img
             className="absolute top-1/10 left-3.5 w-14"
             src="./assets/img/web-logo.png"
