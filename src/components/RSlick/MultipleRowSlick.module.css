@@ -1,0 +1,18 @@
+.slick-prev:before,
+.slick-next:before {
+  color: gray !important;
+  font-size: 3rem !important;
+}
+
+.width-item {
+  width: 100% !important;
+}
+
+.active_film {
+  @apply text-red-500;
+  /* border-bottom: 2px solid rgba(251, 66, 38, 0.57); */
+}
+
+.disabled_film {
+  @apply text-red-500;
+}
