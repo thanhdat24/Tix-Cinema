@@ -6,7 +6,7 @@ import { SET_HE_THONG_RAP_CHIEU } from "./types/CinemaManagementType";
 export const getCinemaManagementAction = () => {
   return async (dispatch) => {
     try {
-      const result = await cinemaManagementService.layThongTinHeThongRap();
+      const result = await cinemaManagementService.layThongTinLichChieuRap();
       // Đưa lên reducer
       console.log("result", result.data);
       if (result.status === STATUS_CODE.SUCCESS) {

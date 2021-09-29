@@ -6,7 +6,7 @@ export class CinemaManagementService extends baseService {
     super();
   }
 
-  layThongTinHeThongRap = () => {
+  layThongTinLichChieuRap = () => {
     return this.get(
       `/api/QuanLyRap/LayThongTinLichChieuHeThongRap?maNhom=${GPID}`
     );
