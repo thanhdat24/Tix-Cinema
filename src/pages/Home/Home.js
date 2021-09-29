@@ -4,13 +4,18 @@ import Film from "../../components/Film/Film";
 import HomeMenu from "./HomeMenu/HomeMenu";
 import MultipleRowSlick from "../../components/RSlick/MultipleRowSlick";
 import { getFilmManagementAction } from "../../redux/actions/FilmManagementAction";
+import { getCinemaManagementAction } from "../../redux/actions/CinemaManagementAction";
 export default function Home(props) {
   const { arrFilm } = useSelector((state) => state.FilmManagementReducer);
   const dispatch = useDispatch();
-
+  const { heThongRapChieu } = useSelector(
+    (state) => state.CinemaManagementReducer
+  );
   useEffect(() => {
-    const action = getFilmManagementAction();
-    dispatch(action);
+    // Danh sach film
+    dispatch(getFilmManagementAction());
+    // Danh sach he thong rap chieu
+    dispatch(getCinemaManagementAction());
   }, []);
   return (
     <div>
@@ -22,9 +27,8 @@ export default function Home(props) {
           </div> */}
         </div>
       </section>
-      <div>
-        {" "}
-        <HomeMenu />
+      <div className="mx-32">
+        <HomeMenu heThongRapChieu={heThongRapChieu} />
       </div>
     </div>
   );
