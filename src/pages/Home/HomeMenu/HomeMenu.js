@@ -42,9 +42,16 @@ export default class Demo extends React.PureComponent {
                         width="50"
                         alt={cumRap.maCumRap}
                       />
-                      <div className="ml-3">
-                        <p>{cumRap.tenCumRap}</p>
-                        <p className="text-left text-red-500">[chi tiết]</p>
+                      <div className="ml-3 text-left font-medium">
+                        <p className="text-green-600">{cumRap.tenCumRap}</p>
+                        <p className="text-gray-500">
+                          {cumRap.diaChi.length > 31 ? (
+                            <p>{cumRap.diaChi.slice(0, 31)}...</p>
+                          ) : (
+                            <p>{cumRap.diaChi}</p>
+                          )}
+                        </p>
+                        <p className=" text-red-500">[chi tiết]</p>
                       </div>
                     </div>
                   }
@@ -66,7 +73,6 @@ export default class Demo extends React.PureComponent {
                           />
                           <div className="">
                             <h3 className="ml-3 font-bold">{film.tenPhim}</h3>
-                            <p className="ml-3 font-medium">{cumRap.diaChi}</p>
                             <div className="grid grid-cols-3 gap-2">
                               {film.lstLichChieuTheoPhim
                                 ?.slice(0, 10)
