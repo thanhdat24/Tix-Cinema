@@ -11,5 +11,8 @@ export class CinemaManagementService extends baseService {
       `/api/QuanLyRap/LayThongTinLichChieuHeThongRap?maNhom=${GPID}`
     );
   };
+  layThongTinLichChieuPhim = (maPhim) => {
+    return this.get(`/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`);
+  };
 }
 export const cinemaManagementService = new CinemaManagementService();

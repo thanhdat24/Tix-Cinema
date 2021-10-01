@@ -1,3 +1,4 @@
+import { SET_CHI_TIET_PHIM } from "../actions/types/CinemaManagementType";
 import {
   SET_FILM_DANG_CHIEU,
   SET_FILM_SAP_CHIEU,
@@ -38,6 +39,7 @@ const initialState = {
   dangChieu: true,
   sapChieu: true,
   arrFilmDefault: [],
+  filmDetail: {},
 };
 
 export const FilmManagementReducer = (state = initialState, action) => {
@@ -63,6 +65,10 @@ export const FilmManagementReducer = (state = initialState, action) => {
         (film) => film.sapChieu === state.sapChieu
       );
       return { ...state };
+    }
+
+    case SET_CHI_TIET_PHIM: {
+      return { ...state, filmDetail: action.filmDetail };
     }
     default:
       return { ...state };

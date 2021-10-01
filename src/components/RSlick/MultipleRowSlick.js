@@ -33,15 +33,13 @@ function SamplePrevArrow(props) {
 
 const MultipleRowSlick = (props) => {
   const settings = {
-    className: "center variable-width",
-    centerMode: true,
-    infinite: true,
-    centerPadding: "60px",
-    slidesToShow: 2,
+    className: "center",
+    infinite: false,
     speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    initialSlide: 1,
     rows: 2,
-    slidesPerRow: 2,
-    variableWidth: true,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
