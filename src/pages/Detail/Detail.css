@@ -1,0 +1,9 @@
+.tab-nav .ant-tabs-nav-wrap {
+  border-bottom: 1px solid rgb(10, 32, 41) !important;
+  z-index: 2;
+}
+
+.tab-content .ant-tabs-nav-wrap {
+  border-bottom: 1px solid transparent !important;
+  z-index: 2;
+}

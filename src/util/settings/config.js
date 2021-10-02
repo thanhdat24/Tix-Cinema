@@ -8,3 +8,5 @@ export const STATUS_CODE = {
   NOT_FOUND: 404,
   SERVER_ERROR: 500,
 };
+
+export const USER_LOGIN = "USER_LOGIN";

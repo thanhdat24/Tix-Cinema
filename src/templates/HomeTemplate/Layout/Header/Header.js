@@ -1,17 +1,21 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
+import { history } from "../../../../App";
 export default function Header(props) {
   return (
     <header className="dark:bg-coolGray-800 dark:text-coolGray-100 bg-white fixed w-full z-10">
       <div className="container flex justify-between h-16 mx-auto">
-        <a href="#" aria-label="Back to homepage" className="flex items-center">
+        <NavLink
+          to="/"
+          aria-label="Back to homepage"
+          className="flex items-center"
+        >
           <img
             className="absolute top-1/10 left-3.5 w-14"
             src="./assets/img/web-logo.png"
             alt="logo"
           />
-        </a>
+        </NavLink>
         <ul className="items-stretch hidden space-x-3 lg:flex ">
           <li className="flex">
             <NavLink
@@ -42,7 +46,14 @@ export default function Header(props) {
           </li>
         </ul>
         <div className="items-center flex-shrink-0 hidden lg:flex">
-          <button className="self-center px-8 py-3 rounded">Sign in</button>
+          <button
+            onClick={() => {
+              history.push("/login");
+            }}
+            className="self-center px-8 py-3 rounded"
+          >
+            Sign in
+          </button>
           <button className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-coolGray-900">
             Sign up
           </button>

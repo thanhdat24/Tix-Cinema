@@ -9,6 +9,7 @@ import moment from "moment";
 import { layThongTinChiTietPhimAction } from "../../redux/actions/CinemaManagementAction";
 import { Radio, Space, Rate } from "antd";
 import { NavLink } from "react-router-dom";
+import "./Detail.css";
 const { TabPane } = Tabs;
 
 export default function Detail(props) {
@@ -89,12 +90,15 @@ export default function Detail(props) {
       <Tabs
         defaultActiveKey="1"
         centered
+        bottomOffset={80}
+        className="tab-nav"
         style={{
           backgroundColor: "rgb(10, 32, 41)",
           color: "#fff",
+          borderBottom: "red !important",
         }}
       >
-        <TabPane tab="Lịch chiếu" key="1">
+        <TabPane tab="Lịch chiếu" key="1" className="tab-content">
           <div className="container m-72 w-2/3 my-20 px-5 py-5 bg-white">
             <Tabs tabPosition={"left"}>
               {filmDetail.heThongRapChieu?.map((htr, index) => {
@@ -138,7 +142,7 @@ export default function Detail(props) {
                                   .map((lichChieu, index) => {
                                     return (
                                       <NavLink
-                                        to="/"
+                                        to={`/checkout/${lichChieu.maLichChieu}`}
                                         className="col-span-1 text-green-500 font-bold py-1 px-2 rounded-md"
                                         key={index}
                                         style={{
