@@ -1,0 +1,9 @@
+export const SET_LIST_PHONG_VE = "SET_LIST_PHONG_VE";
+
+export const DAT_GHE = "DAT_GHE";
+
+export const DAT_GHE_SUCCESS = "DAT_GHE_SUCCESS";
+
+export const CHANGE_STATUS = "CHANGE_STATUS";
+
+export const CHANGE_STATUS_ACTIVE = "CHANGE_STATUS_ACTIVE";
