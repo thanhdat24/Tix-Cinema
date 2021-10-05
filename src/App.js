@@ -12,6 +12,7 @@ import Checkout from "./pages/Checkout/Checkout";
 import React, { Suspense, lazy } from "react";
 import Login from "./pages/Login/Login";
 import { UserTemplate } from "./templates/UserTemplate/UserTemplate";
+import Loading from "./components/Loading/Loading";
 export const history = createBrowserHistory();
 
 const CheckoutTemplateLazy = lazy(() =>
@@ -21,6 +22,7 @@ const CheckoutTemplateLazy = lazy(() =>
 function App() {
   return (
     <Router history={history}>
+      <Loading />
       <Switch>
         <HomeTemplate path="/" exact Component={Home} />
         <HomeTemplate path="/contact" exact Component={Contact} />
