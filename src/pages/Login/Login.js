@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { layThongTinDangNhap } from "../../redux/actions/UserManagementAction";
+import { layThongTinDangNhapAction } from "../../redux/actions/UserManagementAction";
 
 export default function Login(props) {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export default function Login(props) {
       matKhau: "",
     },
     onSubmit: (values) => {
-      dispatch(layThongTinDangNhap(values));
+      dispatch(layThongTinDangNhapAction(values));
 
       console.log("values", values);
     },

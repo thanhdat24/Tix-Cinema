@@ -9,6 +9,11 @@ export class UserManagementService extends baseService {
     // {taiKhoan:'',matKhau:''}
     return this.post(`/api/QuanLyNguoiDung/DangNhap`, thongTinDangNhap);
   };
+
+  layThongTinNguoiDung = ()=>{
+    return this.post(`/api/QuanLyNguoiDung/ThongTinTaiKhoan`);
+    
+  }
 }
 
 export const userManagementService = new UserManagementService();
