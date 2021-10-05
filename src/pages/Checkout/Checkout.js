@@ -6,6 +6,7 @@ import { Steps, Divider } from "antd";
 import {
   layDanhSachPhongVeAction,
   layThongTinDatVeAction,
+  datGheAction,
 } from "../../redux/actions/BookingTicketManagementAction";
 import "./Checkout.css";
 import formatDate from "../../util/settings/formatDate";
@@ -16,6 +17,7 @@ import {
 import _ from "lodash";
 import { ThongTinDatVe } from "../../_core/models/ThongTinDatVe";
 import { layThongTinNguoiDungAction } from "../../redux/actions/UserManagementAction";
+import { connection } from "../../index";
 function Checkout(props) {
   const { userLogin } = useSelector((state) => state.UserManagementReducer);
   const { danhSachPhongVe, danhsachGheDangDat, danhSachKhachDangDat } =
@@ -28,11 +30,48 @@ function Checkout(props) {
     // Gọi hàm tạo ra 1 async function
     const action = layDanhSachPhongVeAction(props.match.params.id);
     // dispatch function
-
     dispatch(action);
-  }, []);
-  console.log({ danhSachPhongVe });
 
+    //Vừa vào trang load tất cả ghế của các người khác đang đặt
+    connection.invoke("loadDanhSachGhe", props.match.params.id);
+
+    // Load danh sách ghế đang đặt từ server về (lắng nghe tín hiệu từ server trả về)
+    connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
+      console.log("danhSachGheKhachDat", dsGheKhachDat);
+
+      // //Bước 1: Loại mình ra khỏi danh sách
+      // dsGheKhachDat = dsGheKhachDat.filter(
+      //   (item) => item.taiKhoan !== userLogin.taiKhoan
+      // );
+
+      // //Bước 2: gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung
+      // let arrGheKhachDat = dsGheKhachDat.reduce((result, item, index) => {
+      //   // Biến chuỗi danhSachGhe thành mảng sử dụng JSON.parse
+      //   let arrGhe = JSON.parse(item.danhSachGhe);
+
+      //   return { ...result, ...arrGhe };
+      // }, []);
+      // // Loại bỏ những phần tử trùng trong mảng
+      // // Đưa dữ liệu ghế khách đặt cập nhập redux
+      // arrGheKhachDat = _.uniqBy(arrGheKhachDat, "maGhe");
+
+      // // Đưa dữ liệu ghế khách đặt về redux
+      // dispatch({ type: "GHE_KHACH_DAT", arrGheKhachDat });
+
+      // //Cài đặt sự kiện khi reload trang
+      // window.addEventListener("beforeunload", clearGhe);
+
+      // return () => {
+      //   clearGhe();
+      //   window.removeEventListener("beforeunload", clearGhe);
+      // };
+    });
+  }, []);
+  // const clearGhe = function (event) {
+  //   connection.invoke("huyDat", userLogin.taiKhoan, props.match.params.id);
+  // };
+
+  console.log({ danhSachPhongVe });
   // render hàng ghế
   const renderSeats = () => {
     return danhSachGhe.map((ghe, index) => {
@@ -66,7 +105,7 @@ function Checkout(props) {
           {" "}
           <button
             onClick={() => {
-              dispatch({ type: DAT_GHE, gheDuocChon: ghe });
+              dispatch(datGheAction(ghe, props.match.params.id));
             }}
             disabled={ghe.daDat || classGheKhachDat !== ""}
             className={`ghe ${classGheVip} ${classGheDaDat} ${classGheDangDat} ${classGheDaDuocDat} ${classGheKhachDat}`}

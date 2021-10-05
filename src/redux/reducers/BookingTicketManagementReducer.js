@@ -9,7 +9,8 @@ import { ThongTinPhongVe } from "../../_core/models/ThongTinPhongVe";
 const stateDefault = {
   danhSachPhongVe: new ThongTinPhongVe(),
   danhsachGheDangDat: [],
-  danhSachKhachDangDat: [{ maGhe: 49001 },{maGhe: 49002}],
+  danhSachKhachDangDat: [{ maGhe: 52201 }, { maGhe: 52202 }],
+  //  [{ maGhe: 52201 }, { maGhe: 52202 }],
   statusActive: "1",
 };
 
@@ -46,6 +47,9 @@ export const BookingTicketManagementReducer = (
     }
     case CHANGE_STATUS_ACTIVE: {
       return { ...state, statusActive: action.number };
+    }
+    case "GHE_KHACH_DAT": {
+      return { ...state, danhsachGheDangDat: action.arrGheKhachDat };
     }
     default:
       return state;
