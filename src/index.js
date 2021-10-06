@@ -10,7 +10,6 @@ import reportWebVitals from "./reportWebVitals";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { DOMAIN } from "./util/settings/config";
-
 // import đa ngôn ngữ
 import "./i18n";
 //Cấu hình realtime (websocket với signalR)
