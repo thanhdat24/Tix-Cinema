@@ -80,7 +80,7 @@ export default class Demo extends React.PureComponent {
                                   return (
                                     <NavLink
                                       className="ml-3 text-lg text-green-600 font-semibold hover:text-red-500"
-                                      to="/"
+                                      to={`/checkout/${lichChieu.maLichChieu}`}
                                       key={index}
                                     >
                                       {moment(
