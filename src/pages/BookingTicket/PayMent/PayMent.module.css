@@ -1,0 +1,119 @@
+/* PayMent */
+
+.payMent {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  box-shadow: 0 0 15px rgb(0 0 0 / 30%);
+  padding: 0 8%;
+  background-color: #fff;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.payMentItem {
+  position: relative;
+  padding: 12px 0;
+}
+
+.amount {
+  line-height: 60px;
+  text-align: center;
+  font-size: 41px;
+  color: #44c020;
+  font-weight: 500;
+}
+.tenPhim {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.seatInfo {
+  display: flex;
+  justify-content: space-between;
+  gap: 10%;
+  color: #fb4226;
+  font-size: 18;
+}
+.amountLittle {
+  color: #44c020;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+
+.labelEmail {
+  display: block;
+  position: absolute;
+  top: 9%;
+  left: 0;
+}
+.labelPhone {
+  display: block;
+  position: absolute;
+  top: 9%;
+  left: 0;
+}
+.fillIn {
+  border: none;
+  width: 100%;
+  line-height: 1.7;
+}
+.fillIn:focus {
+  outline: none;
+}
+.btnDiscount {
+  background-color: #afafaf;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 7px;
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  transform: translateY(-50%);
+}
+.selectedPayMentMethod {
+  padding-top: 12;
+}
+.toggleNotice {
+  font-size: 15px;
+  color: #fb4f35;
+  padding-top: 12px;
+  font-weight: 400;
+}
+
+.bottomSection {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.btnDatVe {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 25%;
+  border: none;
+  cursor: pointer;
+  height: 60px;
+  background-image: linear-gradient(
+    223deg,
+    rgb(180, 236, 81) 0px,
+    rgb(66, 147, 33) 100%
+  );
+}
+.txtDatVe {
+  margin: auto;
+  color: #e9e9e9;
+  font-size: 25px;
+}
