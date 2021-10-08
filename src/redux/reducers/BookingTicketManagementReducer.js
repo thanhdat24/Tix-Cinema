@@ -11,7 +11,7 @@ const stateDefault = {
   danhsachGheDangDat: [],
   danhSachKhachDangDat: [{ maGhe: 52201 }, { maGhe: 52202 }],
   //  [{ maGhe: 52201 }, { maGhe: 52202 }],
-  statusActive: "1",
+  statusActive: 0,
 };
 
 export const BookingTicketManagementReducer = (
@@ -43,7 +43,7 @@ export const BookingTicketManagementReducer = (
       return { ...state, danhsachGheDangDat: [] };
     }
     case CHANGE_STATUS: {
-      return { ...state, statusActive: "2" };
+      return { ...state, statusActive: 2 };
     }
     case CHANGE_STATUS_ACTIVE: {
       return { ...state, statusActive: action.number };

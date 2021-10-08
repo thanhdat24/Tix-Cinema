@@ -1,4 +1,3 @@
-
 .checkout {
   width: 100%;
   height: 100vh;
@@ -13,8 +12,14 @@
   user-select: none;
 }
 
-.noteSeat {
-  color: #9b9b9b;
-  padding: 2% 10% 0;
-  font-size: 13px;
+
+.bookTicked {
+  display: flex;
 }
+.left {
+  flex: 75%;
+}
+.right {
+  flex: 25%;
+}
+
