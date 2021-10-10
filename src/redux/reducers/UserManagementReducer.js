@@ -1,17 +1,18 @@
-
 import { TOKEN, USER_LOGIN } from "../../util/settings/config";
 import {
   DANG_NHAP_ACTION,
   SET_THONG_TIN_NGUOI_DUNG,
 } from "../actions/types/UserManagementType";
 
-let user = {};
-if (localStorage.getItem(USER_LOGIN)) {
-  user = JSON.parse(localStorage.getItem(USER_LOGIN));
-}
-
+// let user = {};
+// if (localStorage.getItem(USER_LOGIN)) {
+//   user = JSON.parse(localStorage.getItem(USER_LOGIN));
+// }
+const userLogin = localStorage.getItem(USER_LOGIN)
+  ? JSON.parse(localStorage.getItem(USER_LOGIN))
+  : null;
 const stateDefault = {
-  userLogin: user,
+  userLogin: userLogin,
   thongTinNguoiDung: {},
 };
 

@@ -1,4 +1,4 @@
-import { makeStyles } from "@mui/styles";
+import { makeStyles } from "@material-ui/core";
 const useStyles = makeStyles({
   listSeat: {
     position: "relative",

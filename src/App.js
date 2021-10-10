@@ -15,6 +15,9 @@ import Login from "./pages/Login/Login";
 import Loading from "./components/Loading/Loading";
 import { UserTemplate } from "./templates/UserTemplate/UserTemplate";
 import Checkout from "./pages/BookingTicket/Checkout/Checkout";
+import AdminLayout from "./layouts/AdminLayout/AdminLayout";
+import AdminTemplate from "./templates/AdminTemplate/AdminTemplate";
+import MoviesManagement from "./pages/MoviesManagement/MoviesManagement";
 export const history = createBrowserHistory();
 
 const CheckoutTemplateLazy = lazy(() =>
@@ -31,7 +34,28 @@ function App() {
         <HomeTemplate path="/news" exact Component={News} />
         <HomeTemplate path="/detail/:id" exact Component={Detail} />
         <Route path="/profile" exact component={Profile} />
-
+        <Route
+          exact
+          path={["/admin/users", "/admin/movies", "/admin/showtimes"]}
+        >
+          <AdminLayout>
+            <AdminTemplate
+              exact
+              path="/admin/users"
+              // component={UsersManagement}
+            />
+            <AdminTemplate
+              exact
+              path="/admin/movies"
+              component={MoviesManagement}
+            />
+            <AdminTemplate
+              exact
+              path="/admin/showtimes"
+              // component={CreateShowtime}
+            />
+          </AdminLayout>
+        </Route>
         <CheckoutTemplate path="/checkout/:id" exact Component={Checkout} />
         <Route path="/login" exact component={Login} />
         <Route path="/register" exact component={Register} />
