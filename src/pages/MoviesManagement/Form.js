@@ -10,7 +10,8 @@ import {
 } from "@material-ui/pickers";
 import { ThemeProvider } from "@material-ui/styles";
 import DateFnsUtils from "@date-io/date-fns";
-import FormControl from "@material-ui/core/FormControl";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import { materialTheme } from "./styles";
 import TextField from "./Textfield";
 import { useStyles } from "./styles";
@@ -19,9 +20,9 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
   const classes = useStyles();
 
   const [srcImage, setSrcImage] = useState(selectedPhim?.hinhAnh);
-  const [selectedDate, handleDateChange] = useState(new Date());
   const setThumbnailPreviews = (e) => {
     let file = e.target;
+    // Tạo đối tượng để đọc file
     var reader = new FileReader();
     reader.readAsDataURL(file.files[0]);
     reader.onload = function () {
@@ -43,33 +44,35 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
     moTa: yup
       .string()
       .required("*Không được bỏ trống!")
-      .min(100, "Mô tả cần 100 ký tự trở lên!"),
+      .min(50, "*Mô tả cần 50 ký tự trở lên!"),
     ngayKhoiChieu: yup.string().required("*Chưa chọn ngày!"),
     danhGia: yup
       .number()
+      .integer()
       .required("*Không được bỏ trống!")
       .min(0, "*Điểm đánh giá phải từ 0 đến 10")
       .integer("*Điểm đánh giá phải từ 0 đến 10")
       .max(10, "*Điểm đánh giá phải từ 0 đến 10"),
   });
 
-  const handleSubmit = (movieObj) => {
-    let hinhAnh = movieObj.hinhAnh;
-    let fakeImage = { srcImage, maPhim: movieObj.maPhim };
-    movieObj = {
-      ...movieObj,
-      ngayKhoiChieu: movieObj.ngayKhoiChieu.toLocaleDateString("en-GB"),
-    };
-    if (selectedPhim.maPhim) {
-      onUpdate(movieObj, hinhAnh, fakeImage);
-      return;
-    }
-    const newMovieObj = { ...movieObj };
-    delete newMovieObj.maPhim;
-    delete newMovieObj.biDanh;
-    delete newMovieObj.danhGia;
-    onAddMovie(newMovieObj);
-  };
+  // const handleSubmit = (movieObj) => {
+  //   let hinhAnh = movieObj.hinhAnh;
+  //   let fakeImage = { srcImage, maPhim: movieObj.maPhim };
+  //   movieObj = {
+  //     ...movieObj,
+  //     ngayKhoiChieu: movieObj.ngayKhoiChieu.toLocaleDateString("en-GB"),
+  //   };
+
+  //   if (selectedPhim.maPhim) {
+  //     onUpdate(movieObj, hinhAnh, fakeImage);
+  //     return;
+  //   }
+  //   const newMovieObj = { ...movieObj };
+  //   delete newMovieObj.maPhim;
+  //   delete newMovieObj.biDanh;
+  //   delete newMovieObj.danhGia;
+  //   onAddMovie(newMovieObj);
+  // };
 
   return (
     <Formik
@@ -87,45 +90,24 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
         danhGia: selectedPhim.danhGia,
       }}
       validationSchema={movieSchema}
-      onSubmit={handleSubmit}
+      onSubmit={(values) => {
+        console.log("values", values);
+      }}
     >
       {(formikProp) => (
-        <Form>
+        <Form className={classes.form}>
           <div className="form-group">
-            {/* <label>Tên Phim&nbsp;</label> */}
-            <TextField
-              name="tenPhim"
-              fullWidth
-              label="Tên Phim"
-              id="fullWidth"
-            />
-            <ErrorMessage
-              name="tenPhim"
-              render={(msg) => <span className="text-danger">{msg}</span>}
-            />
-
-            {/* <Field name="tenPhim" className="form-control" /> */}
+            <TextField name="tenPhim" fullWidth label="Tên Phim" />
           </div>
           <div className="form-group">
-            <TextField
-              fullWidth
-              name="trailer"
-              label="Trailer"
-              id="fullWidth"
-            />
-            {/* <label>Trailer&nbsp;</label> */}
-            <ErrorMessage
-              name="trailer"
-              render={(msg) => <span className="text-danger">{msg}</span>}
-            />
-            {/* <Field name="trailer" className="form-control" /> */}
+            <TextField fullWidth name="trailer" label="Trailer" />
           </div>
           <div className="form-group">
             <label>Hình ảnh&nbsp;</label>
-            <ErrorMessage
+            {/* <ErrorMessage
               name="hinhAnh"
               render={(msg) => <span className="text-danger">{msg}</span>}
-            />
+            /> */}
             <div className="form-row">
               <div className="col-2">
                 {srcImage ? (
@@ -146,10 +128,7 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
                   id="contained-button-file"
                   className="form-control"
                   onChange={(e) => {
-                    formikProp.setFieldValue(
-                      "hinhAnh",
-                      e.currentTarget.files[0]
-                    );
+                    formikProp.setFieldValue("hinhAnh", e.target.files[0]);
                     setThumbnailPreviews(e);
                   }}
                 />
@@ -157,7 +136,6 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
             </div>
           </div>
           <div className="form-group">
-            {/* <label>Mô tả&nbsp;</label> */}
             <TextField
               fullWidth
               name="moTa"
@@ -166,40 +144,42 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
               multiline={true}
               rows={2}
             />
-            <ErrorMessage
-              name="moTa"
-              render={(msg) => <span className="text-danger">{msg}</span>}
-            />
-            {/* <Field as="textarea" name="moTa" className="form-control" /> */}
           </div>
-          <div className="form-group">
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <ThemeProvider theme={materialTheme}>
-                <KeyboardDatePicker
-                  fullWidth
-                  autoOk
-                  variant="inline"
-                  inputVariant="outlined"
-                  label="Ngày khởi chiếu"
-                  value={formikProp.values.ngayKhoiChieu}
-                  onChange={(date) =>
-                    formikProp.setFieldValue("ngayKhoiChieu", date)
-                  }
-                  format="MM/dd/yyyy"
+          <div className="form-row">
+            <div className="col-6">
+              {" "}
+              <div className="form-group">
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <ThemeProvider theme={materialTheme}>
+                    <KeyboardDatePicker
+                      fullWidth
+                      autoOk
+                      inputVariant="outlined"
+                      label="Ngày khởi chiếu"
+                      value={formikProp.values.ngayKhoiChieu}
+                      onChange={(date) =>
+                        formikProp.setFieldValue("ngayKhoiChieu", date)
+                      }
+                      format="MM/dd/yyyy"
+                    />
+                  </ThemeProvider>
+                </MuiPickersUtilsProvider>
+              </div>
+            </div>
+            <div className="col-6">
+              <div
+                className="form-group"
+                // hidden={selectedPhim.maPhim ? false : true}
+              >
+                <TextField
+                  label="Đánh giá"
+                  name="danhGia"
+                  defaultValue="Default Value"
+                  type="number"
+                  className="form-control"
                 />
-              </ThemeProvider>
-            </MuiPickersUtilsProvider>
-          </div>
-          <div
-            className="form-group"
-            hidden={selectedPhim.maPhim ? false : true}
-          >
-            <label>Đánh giá&nbsp;</label>
-            <ErrorMessage
-              name="danhGia"
-              render={(msg) => <span className="text-danger">{msg}</span>}
-            />
-            <Field name="danhGia" type="number" className="form-control" />
+              </div>
+            </div>
           </div>
           <Button
             fullWidth

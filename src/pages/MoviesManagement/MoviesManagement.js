@@ -28,7 +28,7 @@ export default function MoviesManagement() {
   const callApiChangeImageSuccess = useRef(false);
   const [openModal, setOpenModal] = React.useState(false);
   const selectedPhim = useRef(null);
-
+  console.log("selectedPhim", selectedPhim);
   const dispatch = useDispatch();
   const { arrFilmDefault } = useSelector(
     (state) => state.FilmManagementReducer
@@ -111,6 +111,9 @@ export default function MoviesManagement() {
       align: "center",
       headerClassName: "custom-header",
     },
+    { field: "maPhim", hide: true, width: 130 },
+    { field: "maNhom", hide: true, width: 130 },
+    { field: "biDanh", hide: true, width: 200, renderCell: RenderCellExpand },
     {
       field: "hanhDong",
       headerName: "Hành Động",
@@ -141,6 +144,7 @@ export default function MoviesManagement() {
       danhGia: 10,
     };
     selectedPhim.current = emtySelectedPhim;
+
     setOpenModal(true);
   };
 

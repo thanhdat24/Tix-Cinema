@@ -169,6 +169,9 @@ const useStyles = makeStyles((theme) => {
     //   width: "95%",
     //   borderRadius: 4,
     // },
+    form: {
+      padding: "0 20px",
+    },
   };
 });
 const styles = (theme) => ({
