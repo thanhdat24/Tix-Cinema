@@ -4,7 +4,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => {
   return {
     control: {
@@ -161,6 +161,14 @@ const useStyles = makeStyles((theme) => {
         display: "block",
       },
     },
+    // input: {
+    //   display: "none",
+    // },
+    // label: {
+    //   border: "1px solid rgba(0, 0, 0, 0.87)",
+    //   width: "95%",
+    //   borderRadius: 4,
+    // },
   };
 });
 const styles = (theme) => ({
@@ -193,7 +201,7 @@ const DialogTitle = withStyles(styles)((props) => {
   );
 });
 
-const materialTheme = createMuiTheme({
+const materialTheme = createTheme({
   overrides: {
     MuiPickersToolbar: {
       toolbar: {

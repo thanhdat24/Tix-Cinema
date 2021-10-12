@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useStyles } from "./styles";
+import { useStyles, DialogContent, DialogTitle } from "./styles";
 import { DataGrid, GridOverlay, GridToolbar } from "@material-ui/data-grid";
 import SearchIcon from "@material-ui/icons/Search";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -11,6 +11,8 @@ import { getFilmManagementAction } from "../../redux/actions/FilmManagementActio
 import slugify from "slugify";
 import RenderCellExpand from "./RenderCellExpand";
 import Action from "./Action";
+import Dialog from "@material-ui/core/Dialog";
+import Form from "./Form";
 
 function CustomLoadingOverlay() {
   return (
@@ -24,6 +26,8 @@ export default function MoviesManagement() {
   const [valueSearch, setValueSearch] = useState("");
   const newImageUpdate = useRef("");
   const callApiChangeImageSuccess = useRef(false);
+  const [openModal, setOpenModal] = React.useState(false);
+  const selectedPhim = useRef(null);
 
   const dispatch = useDispatch();
   const { arrFilmDefault } = useSelector(
@@ -100,6 +104,14 @@ export default function MoviesManagement() {
       valueFormatter: (params) => params.value.slice(0, 10),
     },
     {
+      field: "danhGia",
+      headerName: "Đánh giá",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+    {
       field: "hanhDong",
       headerName: "Hành Động",
       width: 150,
@@ -115,6 +127,23 @@ export default function MoviesManagement() {
       headerClassName: "custom-header",
     },
   ];
+
+  const handleAddMovie = () => {
+    const emtySelectedPhim = {
+      maPhim: "",
+      tenPhim: "",
+      biDanh: "",
+      trailer: "",
+      hinhAnh: "",
+      moTa: "",
+      maNhom: "",
+      ngayKhoiChieu: "",
+      danhGia: 10,
+    };
+    selectedPhim.current = emtySelectedPhim;
+    setOpenModal(true);
+  };
+
   const modifySlugify = { lower: true, locale: "vi" };
 
   const onFilter = () => {
@@ -172,7 +201,7 @@ export default function MoviesManagement() {
               variant="contained"
               color="primary"
               className={classes.addMovie}
-              // onClick={handleAddMovie}
+              onClick={handleAddMovie}
               // disabled={loadingAddUploadMovie}
               startIcon={<AddBoxIcon />}
             >
@@ -194,6 +223,20 @@ export default function MoviesManagement() {
         }}
         getRowId={(row) => row.maPhim}
       />
+      <Dialog open={openModal}>
+        <DialogTitle onClose={() => setOpenModal(false)}>
+          {selectedPhim?.current?.tenPhim
+            ? `Sửa phim: ${selectedPhim?.current?.tenPhim}`
+            : "Thêm Phim"}
+        </DialogTitle>
+        <DialogContent dividers>
+          <Form
+            selectedPhim={selectedPhim.current}
+            // onUpdate={onUpdate}
+            // onAddMovie={onAddMovie}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
