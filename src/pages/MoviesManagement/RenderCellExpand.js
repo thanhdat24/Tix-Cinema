@@ -34,14 +34,14 @@ const GridCellExpand = function GridCellExpand(props) {
   //     setShowFullCell(false);
   //   };
 
-  const handleChangeSize = (e, newValue) => {
-    if (e.cancelable) {
-      // fix Ignored attempt to cancel a touchstart event with cancelable=false, for example because scrolling is in progress and cannot be interrupted.
-      e.preventDefault();
-    }
-    let width = (200 * newValue + 12000) / 80;
-    setwidthImage({ widthImage: width, value: newValue });
-  };
+  // const handleChangeSize = (e, newValue) => {
+  //   if (e.cancelable) {
+  //     // fix Ignored attempt to cancel a touchstart event with cancelable=false, for example because scrolling is in progress and cannot be interrupted.
+  //     e.preventDefault();
+  //   }
+  //   let width = (200 * newValue + 12000) / 80;
+  //   setwidthImage({ widthImage: width, value: newValue });
+  // };
 
   return (
     <div
@@ -71,12 +71,12 @@ const GridCellExpand = function GridCellExpand(props) {
             <Slider
               value={widthImage.value}
               classes={{ root: classes.rootSlider }}
-              onChange={handleChangeSize}
+              // onChange={handleChangeSize}
             />
           </div>
         )}
       </div>
-      {showPopper && (
+      {/* {showPopper && (
         <Popper
           open={showFullCell && anchorEl !== null}
           anchorEl={anchorEl}
@@ -111,7 +111,7 @@ const GridCellExpand = function GridCellExpand(props) {
             </Fade>
           )}
         </Popper>
-      )}
+      )} */}
     </div>
   );
 };

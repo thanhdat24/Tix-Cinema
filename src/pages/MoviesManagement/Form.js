@@ -6,16 +6,15 @@ import "date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-  DateTimePicker,
 } from "@material-ui/pickers";
 import { ThemeProvider } from "@material-ui/styles";
 import DateFnsUtils from "@date-io/date-fns";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+
 import { materialTheme } from "./styles";
 import TextField from "./Textfield";
 import { useStyles } from "./styles";
 import Button from "@material-ui/core/Button";
+import { GPID } from "../../util/settings/config";
 export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
   const classes = useStyles();
 
@@ -55,24 +54,24 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
       .max(10, "*Điểm đánh giá phải từ 0 đến 10"),
   });
 
-  // const handleSubmit = (movieObj) => {
-  //   let hinhAnh = movieObj.hinhAnh;
-  //   let fakeImage = { srcImage, maPhim: movieObj.maPhim };
-  //   movieObj = {
-  //     ...movieObj,
-  //     ngayKhoiChieu: movieObj.ngayKhoiChieu.toLocaleDateString("en-GB"),
-  //   };
+  const handleSubmit = (movieObj) => {
+    let hinhAnh = movieObj.hinhAnh;
+    let fakeImage = { srcImage, maPhim: movieObj.maPhim };
+    movieObj = {
+      ...movieObj,
+      ngayKhoiChieu: movieObj.ngayKhoiChieu.toLocaleDateString("en-GB"),
+    };
 
-  //   if (selectedPhim.maPhim) {
-  //     onUpdate(movieObj, hinhAnh, fakeImage);
-  //     return;
-  //   }
-  //   const newMovieObj = { ...movieObj };
-  //   delete newMovieObj.maPhim;
-  //   delete newMovieObj.biDanh;
-  //   delete newMovieObj.danhGia;
-  //   onAddMovie(newMovieObj);
-  // };
+    if (selectedPhim.maPhim) {
+      onUpdate(movieObj, hinhAnh, fakeImage);
+      return;
+    }
+    const newMovieObj = { ...movieObj };
+    delete newMovieObj.maPhim;
+    delete newMovieObj.biDanh;
+    delete newMovieObj.danhGia;
+    onAddMovie(newMovieObj);
+  };
 
   return (
     <Formik
@@ -83,16 +82,14 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
         trailer: selectedPhim.trailer,
         hinhAnh: selectedPhim.hinhAnh,
         moTa: selectedPhim.moTa,
-        maNhom: "GP09",
+        maNhom: GPID,
         ngayKhoiChieu: selectedPhim?.ngayKhoiChieu
           ? new Date(selectedPhim.ngayKhoiChieu)
           : new Date(),
         danhGia: selectedPhim.danhGia,
       }}
       validationSchema={movieSchema}
-      onSubmit={(values) => {
-        console.log("values", values);
-      }}
+      onSubmit={handleSubmit}
     >
       {(formikProp) => (
         <Form className={classes.form}>
@@ -104,10 +101,10 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
           </div>
           <div className="form-group">
             <label>Hình ảnh&nbsp;</label>
-            {/* <ErrorMessage
+            <ErrorMessage
               name="hinhAnh"
               render={(msg) => <span className="text-danger">{msg}</span>}
-            /> */}
+            />
             <div className="form-row">
               <div className="col-2">
                 {srcImage ? (

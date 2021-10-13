@@ -4,6 +4,7 @@ import {
   SET_FILM_SAP_CHIEU,
   SET_LIST_FILM,
 } from "../actions/types/FilmManagementType";
+import { ADD_MOVIE_UPLOAD_FAIL, ADD_MOVIE_UPLOAD_SUCCESS } from "../actions/types/MovieType";
 
 const initialState = {
   arrFilm: [
@@ -40,6 +41,8 @@ const initialState = {
   sapChieu: true,
   arrFilmDefault: [],
   filmDetail: {},
+  successAddUploadMovie: "",
+  loadingAddUploadMovie: false,
 };
 
 export const FilmManagementReducer = (state = initialState, action) => {
@@ -70,6 +73,21 @@ export const FilmManagementReducer = (state = initialState, action) => {
     case SET_CHI_TIET_PHIM: {
       return { ...state, filmDetail: action.filmDetail };
     }
+    case ADD_MOVIE_UPLOAD_SUCCESS: {
+      return {
+        ...state,
+        // successAddUploadMovie: action.payload.data,
+        // loadingAddUploadMovie: false,
+      };
+    }
+    case ADD_MOVIE_UPLOAD_FAIL: {
+      return {
+        ...state,
+        // errorAddUploadMovie: action.payload.error,
+        // loadingAddUploadMovie: false,
+      };
+    }
+
     default:
       return { ...state };
   }

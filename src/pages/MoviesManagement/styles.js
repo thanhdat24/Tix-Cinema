@@ -161,14 +161,7 @@ const useStyles = makeStyles((theme) => {
         display: "block",
       },
     },
-    // input: {
-    //   display: "none",
-    // },
-    // label: {
-    //   border: "1px solid rgba(0, 0, 0, 0.87)",
-    //   width: "95%",
-    //   borderRadius: 4,
-    // },
+
     form: {
       padding: "0 20px",
     },

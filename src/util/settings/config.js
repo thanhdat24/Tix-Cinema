@@ -2,7 +2,7 @@
 
 export const DOMAIN = "http://movieapi.cyberlearn.vn";
 // export const FAKE_AVATAR = `https://i.pravatar.cc/300?u=${avtIdUser}`;
-
+export const BASE_URL = "https://movie0706.cybersoft.edu.vn/api";
 export const TOKEN = "accessToken ";
 export const GPID = "GP02";
 export const STATUS_CODE = {

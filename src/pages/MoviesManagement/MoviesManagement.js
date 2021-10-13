@@ -7,7 +7,11 @@ import InputBase from "@material-ui/core/InputBase";
 import Button from "@material-ui/core/Button";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import { useDispatch, useSelector } from "react-redux";
-import { getFilmManagementAction } from "../../redux/actions/FilmManagementAction";
+import {
+  getFilmManagementAction,
+  resetMoviesManagement,
+  themPhimUploadHinhAction,
+} from "../../redux/actions/FilmManagementAction";
 import slugify from "slugify";
 import RenderCellExpand from "./RenderCellExpand";
 import Action from "./Action";
@@ -30,26 +34,29 @@ export default function MoviesManagement() {
   const selectedPhim = useRef(null);
   console.log("selectedPhim", selectedPhim);
   const dispatch = useDispatch();
-  const { arrFilmDefault } = useSelector(
+  const { arrFilmDefault, loadingAddUploadMovie } = useSelector(
     (state) => state.FilmManagementReducer
   );
   console.log("arrFilmDefault", arrFilmDefault);
-  // console.log("arr", arr);
 
   useEffect(() => {
     dispatch(getFilmManagementAction());
   }, []);
-
-  // useEffect(() => {
-  //   if (arrFilmDefault) {
-  //     let newMovieListDisplay = arrFilmDefault.map((movie) => ({
-  //       ...movie,
-  //       hanhDong: "",
-  //       id: movie.maPhim,
-  //     }));
-  //     setMovieListDisplay(newMovieListDisplay);
-  //   }
-  // }, [arrFilmDefault]);
+  useEffect(() => {
+    return () => {
+      dispatch(resetMoviesManagement());
+    };
+  }, []);
+  useEffect(() => {
+    if (arrFilmDefault) {
+      let newMovieListDisplay = arrFilmDefault.map((movie) => ({
+        ...movie,
+        hanhDong: "",
+        id: movie.maPhim,
+      }));
+      setMovieListDisplay(newMovieListDisplay);
+    }
+  }, [arrFilmDefault]);
   const classes = useStyles();
   const columns = [
     {
@@ -130,7 +137,13 @@ export default function MoviesManagement() {
       headerClassName: "custom-header",
     },
   ];
-
+  const onAddMovie = (movieObj) => {
+    // if (!loadingAddUploadMovie) {
+    //   dispatch(themPhimUploadHinhAction(movieObj));
+    // }
+    dispatch(themPhimUploadHinhAction(movieObj));
+    setOpenModal(false);
+  };
   const handleAddMovie = () => {
     const emtySelectedPhim = {
       maPhim: "",
@@ -139,7 +152,7 @@ export default function MoviesManagement() {
       trailer: "",
       hinhAnh: "",
       moTa: "",
-      maNhom: "",
+      maNhom: "GP02",
       ngayKhoiChieu: "",
       danhGia: 10,
     };
@@ -152,7 +165,7 @@ export default function MoviesManagement() {
 
   const onFilter = () => {
     // dùng useCallback, slugify bỏ dấu tiếng việt
-    let searchMovieListDisplay = arrFilmDefault.filter((movie) => {
+    let searchMovieListDisplay = movieListDisplay.filter((movie) => {
       const matchTenPhim =
         slugify(movie.tenPhim ?? "", modifySlugify)?.indexOf(
           slugify(valueSearch, modifySlugify)
@@ -179,7 +192,6 @@ export default function MoviesManagement() {
     return searchMovieListDisplay;
   };
 
-  // const rows = arrFilmDefault;
 
   return (
     <div style={{ height: "80vh", width: "100%" }}>
@@ -219,7 +231,7 @@ export default function MoviesManagement() {
         rows={onFilter()}
         columns={columns}
         pageSize={25}
-        checkboxSelection
+        // checkboxSelection
         rowsPerPageOptions={[10, 25, 50]}
         components={{
           LoadingOverlay: CustomLoadingOverlay,
@@ -228,16 +240,12 @@ export default function MoviesManagement() {
         getRowId={(row) => row.maPhim}
       />
       <Dialog open={openModal}>
-        <DialogTitle onClose={() => setOpenModal(false)}>
-          {selectedPhim?.current?.tenPhim
-            ? `Sửa phim: ${selectedPhim?.current?.tenPhim}`
-            : "Thêm Phim"}
-        </DialogTitle>
+        <DialogTitle onClose={() => setOpenModal(false)}>Thêm Phim</DialogTitle>
         <DialogContent dividers>
           <Form
             selectedPhim={selectedPhim.current}
             // onUpdate={onUpdate}
-            // onAddMovie={onAddMovie}
+            onAddMovie={onAddMovie}
           />
         </DialogContent>
       </Dialog>
