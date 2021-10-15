@@ -9,7 +9,7 @@ import AddBoxIcon from "@material-ui/icons/AddBox";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getFilmManagementAction,
-  resetMoviesManagement,
+  getMovieListManagement,
   themPhimUploadHinhAction,
 } from "../../redux/actions/FilmManagementAction";
 import slugify from "slugify";
@@ -34,19 +34,20 @@ export default function MoviesManagement() {
   const selectedPhim = useRef(null);
   console.log("selectedPhim", selectedPhim);
   const dispatch = useDispatch();
-  const { arrFilmDefault, loadingAddUploadMovie } = useSelector(
-    (state) => state.FilmManagementReducer
-  );
+  const { arrFilmDefault, loadingUpdateMovie, loadingUpdateNoneImageMovie } =
+    useSelector((state) => state.FilmManagementReducer);
   console.log("arrFilmDefault", arrFilmDefault);
 
   useEffect(() => {
     dispatch(getFilmManagementAction());
   }, []);
+
   useEffect(() => {
-    return () => {
-      dispatch(resetMoviesManagement());
-    };
+    if (!arrFilmDefault) {
+      dispatch(getMovieListManagement());
+    }
   }, []);
+
   useEffect(() => {
     if (arrFilmDefault) {
       let newMovieListDisplay = arrFilmDefault.map((movie) => ({
@@ -57,17 +58,48 @@ export default function MoviesManagement() {
       setMovieListDisplay(newMovieListDisplay);
     }
   }, [arrFilmDefault]);
+
+  const handleEdit = (phimItem) => {
+    selectedPhim.current = phimItem;
+    setOpenModal(true);
+  };
+
+  const onUpdate = (movieObj, hinhAnh, fakeImage) => {
+    if (loadingUpdateMovie || loadingUpdateNoneImageMovie) {
+      return undefined;
+    }
+    setOpenModal(false);
+    newImageUpdate.current = fakeImage;
+    if (typeof hinhAnh === "string") {
+      // nếu dùng updateMovieUpload sẽ bị reset danhGia về 10
+      const movieUpdate = movieListDisplay.find(
+        (movie) => movie.maPhim === fakeImage.maPhim
+      ); // lẩy ra url gốc, tránh gửi base64 tới backend
+      movieObj.hinhAnh = movieUpdate.hinhAnh;
+
+      return undefined;
+    }
+  };
+
+  const handleAddMovie = () => {
+    const emtySelectedPhim = {
+      maPhim: "",
+      tenPhim: "",
+      biDanh: "",
+      trailer: "",
+      hinhAnh: "",
+      moTa: "",
+      maNhom: "GP02",
+      ngayKhoiChieu: "",
+      danhGia: 10,
+    };
+    selectedPhim.current = emtySelectedPhim;
+
+    setOpenModal(true);
+  };
+
   const classes = useStyles();
   const columns = [
-    {
-      field: "maPhim",
-      headerName: "Tên Phim",
-      width: 250,
-      headerAlign: "center",
-      align: "left",
-      headerClassName: "custom-header",
-      hide: true,
-    },
     {
       field: "tenPhim",
       headerName: "Tên Phim",
@@ -127,7 +159,7 @@ export default function MoviesManagement() {
       width: 150,
       renderCell: (params) => (
         <Action
-          // onEdit={handleEdit}
+          onEdit={handleEdit}
           // onDeleted={handleDeleteOne}
           phimItem={params.row}
         />
@@ -138,27 +170,8 @@ export default function MoviesManagement() {
     },
   ];
   const onAddMovie = (movieObj) => {
-    // if (!loadingAddUploadMovie) {
-    //   dispatch(themPhimUploadHinhAction(movieObj));
-    // }
     dispatch(themPhimUploadHinhAction(movieObj));
     setOpenModal(false);
-  };
-  const handleAddMovie = () => {
-    const emtySelectedPhim = {
-      maPhim: "",
-      tenPhim: "",
-      biDanh: "",
-      trailer: "",
-      hinhAnh: "",
-      moTa: "",
-      maNhom: "GP02",
-      ngayKhoiChieu: "",
-      danhGia: 10,
-    };
-    selectedPhim.current = emtySelectedPhim;
-
-    setOpenModal(true);
   };
 
   const modifySlugify = { lower: true, locale: "vi" };
@@ -192,7 +205,6 @@ export default function MoviesManagement() {
     return searchMovieListDisplay;
   };
 
-
   return (
     <div style={{ height: "80vh", width: "100%" }}>
       <div className={classes.control}>
@@ -208,7 +220,6 @@ export default function MoviesManagement() {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
-                // onChange={(evt) => handleInputSearchChange(evt.target.value)}
               />
             </div>
           </div>
@@ -240,11 +251,15 @@ export default function MoviesManagement() {
         getRowId={(row) => row.maPhim}
       />
       <Dialog open={openModal}>
-        <DialogTitle onClose={() => setOpenModal(false)}>Thêm Phim</DialogTitle>
+        <DialogTitle onClose={() => setOpenModal(false)}>
+          {selectedPhim?.current?.tenPhim
+            ? `Sửa phim: ${selectedPhim?.current?.tenPhim}`
+            : "Thêm Phim"}
+        </DialogTitle>
         <DialogContent dividers>
           <Form
             selectedPhim={selectedPhim.current}
-            // onUpdate={onUpdate}
+            onUpdate={onUpdate}
             onAddMovie={onAddMovie}
           />
         </DialogContent>

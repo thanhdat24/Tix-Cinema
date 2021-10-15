@@ -4,45 +4,25 @@ import {
   SET_FILM_SAP_CHIEU,
   SET_LIST_FILM,
 } from "../actions/types/FilmManagementType";
-import { ADD_MOVIE_UPLOAD_FAIL, ADD_MOVIE_UPLOAD_SUCCESS } from "../actions/types/MovieType";
+import {
+  ADD_MOVIE_UPLOAD_FAIL,
+  ADD_MOVIE_UPLOAD_SUCCESS,
+  GET_MOVIE_LIST_FAIL,
+  GET_MOVIE_LIST_REQUEST,
+  GET_MOVIE_LIST_SUCCESS,
+} from "../actions/types/MovieType";
 
 const initialState = {
-  arrFilm: [
-    {
-      maPhim: 1282,
-      tenPhim: "Ban tay diet quy",
-      biDanh: "ban-tay-diet-quy",
-      trailer: "https://www.youtube.com/embed/uqJ9u7GSaYM",
-      hinhAnh: "http://movieapi.cyberlearn.vn/hinhanh/ban-tay-diet-quy.png",
-      moTa: "Newlywed couple Ted and Tami-Lynn want to have a baby, but in order to qualify to be a parent, Ted will have to prove he's a person in a court of law.",
-      maNhom: "GP00",
-      ngayKhoiChieu: "2019-07-29T00:00:00",
-      danhGia: 5,
-      hot: true,
-      dangChieu: false,
-      sapChieu: true,
-    },
-    {
-      maPhim: 1282,
-      tenPhim: "Ban tay diet quy",
-      biDanh: "ban-tay-diet-quy",
-      trailer: "https://www.youtube.com/embed/uqJ9u7GSaYM",
-      hinhAnh: "http://movieapi.cyberlearn.vn/hinhanh/ban-tay-diet-quy.png",
-      moTa: "Newlywed couple Ted and Tami-Lynn want to have a baby, but in order to qualify to be a parent, Ted will have to prove he's a person in a court of law.",
-      maNhom: "GP00",
-      ngayKhoiChieu: "2019-07-29T00:00:00",
-      danhGia: 5,
-      hot: true,
-      dangChieu: false,
-      sapChieu: true,
-    },
-  ],
+  arrFilm: [],
+  loadingMovieList: false,
+  successAddUploadMovie: null,
+  errorMovieList: null,
+  arrFilmDefault: [],
+
   dangChieu: true,
   sapChieu: true,
-  arrFilmDefault: [],
+
   filmDetail: {},
-  successAddUploadMovie: "",
-  loadingAddUploadMovie: false,
 };
 
 export const FilmManagementReducer = (state = initialState, action) => {
@@ -76,18 +56,30 @@ export const FilmManagementReducer = (state = initialState, action) => {
     case ADD_MOVIE_UPLOAD_SUCCESS: {
       return {
         ...state,
-        // successAddUploadMovie: action.payload.data,
-        // loadingAddUploadMovie: false,
+        successAddUploadMovie: action.payload.data,
       };
     }
     case ADD_MOVIE_UPLOAD_FAIL: {
       return {
         ...state,
-        // errorAddUploadMovie: action.payload.error,
-        // loadingAddUploadMovie: false,
+        errorAddUploadMovie: action.payload.error,
       };
     }
-
+    case GET_MOVIE_LIST_REQUEST: {
+      return { ...state, loadingMovieList2: true, errorMovieList2: null };
+    }
+    case GET_MOVIE_LIST_SUCCESS: {
+      return {
+        ...state,
+        arrFilmDefault: action.payload.data,
+      };
+    }
+    case GET_MOVIE_LIST_FAIL: {
+      return {
+        ...state,
+        errorMovieList2: action.payload.errorMovieList,
+      };
+    }
     default:
       return { ...state };
   }

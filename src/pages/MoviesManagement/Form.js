@@ -142,7 +142,7 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
               rows={2}
             />
           </div>
-          <div className="form-row">
+          <div className="form-row mb-5">
             <div className="col-6">
               {" "}
               <div className="form-group">
@@ -150,7 +150,6 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
                   <ThemeProvider theme={materialTheme}>
                     <KeyboardDatePicker
                       fullWidth
-                      autoOk
                       inputVariant="outlined"
                       label="Ngày khởi chiếu"
                       value={formikProp.values.ngayKhoiChieu}
@@ -166,12 +165,11 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
             <div className="col-6">
               <div
                 className="form-group"
-                // hidden={selectedPhim.maPhim ? false : true}
+                hidden={selectedPhim.maPhim ? false : true}
               >
                 <TextField
                   label="Đánh giá"
                   name="danhGia"
-                  defaultValue="Default Value"
                   type="number"
                   className="form-control"
                 />
