@@ -6,26 +6,46 @@ import {
 } from "../actions/types/FilmManagementType";
 import {
   ADD_MOVIE_UPLOAD_FAIL,
+  ADD_MOVIE_UPLOAD_REQUEST,
   ADD_MOVIE_UPLOAD_SUCCESS,
+  DELETE_MOVIE_FAIL,
+  DELETE_MOVIE_REQUEST,
+  DELETE_MOVIE_SUCCESS,
   GET_MOVIE_LIST_FAIL,
   GET_MOVIE_LIST_REQUEST,
   GET_MOVIE_LIST_SUCCESS,
+  POST_UPDATE_MOVIE_FAIL,
+  POST_UPDATE_MOVIE_REQUEST,
+  POST_UPDATE_MOVIE_SUCCESS,
+  RESET_MOVIE_MANAGEMENT,
 } from "../actions/types/MovieType";
 
 const initialState = {
   arrFilm: [],
   loadingMovieList: false,
-  successAddUploadMovie: null,
   errorMovieList: null,
   arrFilmDefault: [],
 
+  arrFilm2: [],
   dangChieu: true,
   sapChieu: true,
 
+  successUpdateMovie: "",
+  loadingUpdateMovie: false,
+  errorUpdateMovie: null,
+
+
+  successUpdateNoneImageMovie: "",
+  loadingUpdateNoneImageMovie: false,
+  errorUpdateNoneImageMovie: null,
+
+  successAddUploadMovie: "",
+  loadingAddUploadMovie: false,
+  errorAddUploadMovie: null,
   filmDetail: {},
 };
 
-export const FilmManagementReducer = (state = initialState, action) => {
+const FilmManagementReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_LIST_FILM: {
       state.arrFilm = action.arrFilm;
@@ -53,34 +73,92 @@ export const FilmManagementReducer = (state = initialState, action) => {
     case SET_CHI_TIET_PHIM: {
       return { ...state, filmDetail: action.filmDetail };
     }
+
+    case ADD_MOVIE_UPLOAD_REQUEST: {
+      return {
+        ...state,
+        loadingAddUploadMovie: true,
+        errorAddUploadMovie: null,
+      };
+    }
     case ADD_MOVIE_UPLOAD_SUCCESS: {
       return {
         ...state,
         successAddUploadMovie: action.payload.data,
+        loadingAddUploadMovie: false,
       };
     }
     case ADD_MOVIE_UPLOAD_FAIL: {
       return {
         ...state,
         errorAddUploadMovie: action.payload.error,
+        loadingAddUploadMovie: false,
       };
     }
     case GET_MOVIE_LIST_REQUEST: {
-      return { ...state, loadingMovieList2: true, errorMovieList2: null };
+      return {
+        ...state,
+        loadingMovieList: true,
+        errorMovieList: null,
+      };
     }
     case GET_MOVIE_LIST_SUCCESS: {
       return {
         ...state,
-        arrFilmDefault: action.payload.data,
+        arrFilm2: action.payload.data,
+        loadingMovieList: false,
       };
     }
     case GET_MOVIE_LIST_FAIL: {
       return {
         ...state,
-        errorMovieList2: action.payload.errorMovieList,
+        errorMovieList: action.payload.errorMovieList,
+        loadingMovieList: false,
+      };
+    }
+
+    case POST_UPDATE_MOVIE_REQUEST: {
+      return { ...state, loadingUpdateMovie: true, errorUpdateMovie: null };
+    }
+    case POST_UPDATE_MOVIE_SUCCESS: {
+      return {
+        ...state,
+        successUpdateMovie: action.payload.data,
+        loadingUpdateMovie: false,
+      };
+    }
+    case POST_UPDATE_MOVIE_FAIL: {
+      return {
+        ...state,
+        errorUpdateMovie: action.payload.error,
+        loadingUpdateMovie: false,
+      };
+    }
+    case RESET_MOVIE_MANAGEMENT: {
+      return {
+        ...state,
+        loadingMovieList: false,
+        errorMovieList: null,
+
+        successDeleteMovie: "",
+        loadingDeleteMovie: false,
+        errorDeleteMovie: null,
+
+        successUpdateMovie: "",
+        loadingUpdateMovie: false,
+        errorUpdateMovie: null,
+
+        successUpdateNoneImageMovie: "",
+        loadingUpdateNoneImageMovie: false,
+        errorUpdateNoneImageMovie: null,
+
+        successAddUploadMovie: "",
+        loadingAddUploadMovie: false,
+        errorAddUploadMovie: null,
       };
     }
     default:
-      return { ...state };
+      return state;
   }
 };
+export default FilmManagementReducer;

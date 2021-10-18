@@ -1,8 +1,9 @@
 import axiosClient from "../api/axiosClient";
+import { GPID } from "../util/settings/config";
 const moviesApi = {
   //lấy thông tin toàn bộ danh sách phim
   getDanhSachPhim: () => {
-    const path = "/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP02";
+    const path = `/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP02`;
     return axiosClient.get(path);
   },
 
@@ -15,5 +16,16 @@ const moviesApi = {
     }
     return axiosClient.post(path, formData);
   },
+
+  capNhatPhimUpload: (movie) => {
+    const path = `/api/QuanLyPhim/CapNhatPhimUpload`;
+    const formData = new FormData();
+    for (const key in movie) {
+      formData.append(key, movie[key]);
+    }
+    return axiosClient.post(path, formData);
+  },
+
+  
 };
 export default moviesApi;

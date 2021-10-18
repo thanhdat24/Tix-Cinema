@@ -7,16 +7,23 @@ import InputBase from "@material-ui/core/InputBase";
 import Button from "@material-ui/core/Button";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getFilmManagementAction,
-  getMovieListManagement,
-  themPhimUploadHinhAction,
-} from "../../redux/actions/FilmManagementAction";
+import { useSnackbar } from "notistack";
+
 import slugify from "slugify";
 import RenderCellExpand from "./RenderCellExpand";
 import Action from "./Action";
 import Dialog from "@material-ui/core/Dialog";
 import Form from "./Form";
+
+import {
+  getFilmManagementAction,
+  getMovieListManagement,
+  resetMoviesManagement,
+  themPhimUploadHinhAction,
+  updateMovie,
+  updateMovieUpload,
+} from "../../redux/actions/FilmManagementAction";
+import ThumbnailYoutube from "./ThumbnailYoutube";
 
 function CustomLoadingOverlay() {
   return (
@@ -30,24 +37,52 @@ export default function MoviesManagement() {
   const [valueSearch, setValueSearch] = useState("");
   const newImageUpdate = useRef("");
   const callApiChangeImageSuccess = useRef(false);
+  const { enqueueSnackbar } = useSnackbar();
   const [openModal, setOpenModal] = React.useState(false);
   const selectedPhim = useRef(null);
   console.log("selectedPhim", selectedPhim);
   const dispatch = useDispatch();
-  const { arrFilmDefault, loadingUpdateMovie, loadingUpdateNoneImageMovie } =
-    useSelector((state) => state.FilmManagementReducer);
+  const {
+    arrFilmDefault,
+    loadingUpdateMovie,
+    loadingUpdateNoneImageMovie,
+    successAddUploadMovie,
+    successUpdateMovie,
+    successUpdateNoneImageMovie,
+    errorUpdateMovie,
+    errorUpdateNoneImageMovie,
+    errorAddUploadMovie,
+    loadingAddUploadMovie,
+    loadingMovieList,
+    successDeleteMovie,
+  } = useSelector((state) => state.FilmManagementReducer);
+  // console.log("arrFilmDefault", arrFilmDefault);
   console.log("arrFilmDefault", arrFilmDefault);
-
   useEffect(() => {
     dispatch(getFilmManagementAction());
   }, []);
 
   useEffect(() => {
-    if (!arrFilmDefault) {
+    if (
+      !arrFilmDefault ||
+      successUpdateMovie ||
+      successDeleteMovie ||
+      successUpdateNoneImageMovie ||
+      successAddUploadMovie
+    ) {
       dispatch(getMovieListManagement());
     }
+  }, [
+    successUpdateMovie,
+    successDeleteMovie,
+    successUpdateNoneImageMovie,
+    successAddUploadMovie,
+  ]);
+  useEffect(() => {
+    return () => {
+      dispatch(resetMoviesManagement());
+    };
   }, []);
-
   useEffect(() => {
     if (arrFilmDefault) {
       let newMovieListDisplay = arrFilmDefault.map((movie) => ({
@@ -59,26 +94,63 @@ export default function MoviesManagement() {
     }
   }, [arrFilmDefault]);
 
+  
+  useEffect(() => {
+    if (successUpdateMovie || successUpdateNoneImageMovie) {
+      callApiChangeImageSuccess.current = true;
+      enqueueSnackbar(
+        `Update thành công phim: ${successUpdateMovie.content.tenPhim ?? ""}${
+          successUpdateNoneImageMovie.tenPhim ?? ""
+        }`,
+        { variant: "success" }
+      );
+    }
+    if (errorUpdateMovie || errorUpdateNoneImageMovie) {
+      callApiChangeImageSuccess.current = false;
+      enqueueSnackbar(
+        `${errorUpdateMovie ?? ""}${errorUpdateNoneImageMovie ?? ""}`,
+        { variant: "error" }
+      );
+    }
+  }, [
+    successUpdateMovie,
+    errorUpdateMovie,
+    successUpdateNoneImageMovie,
+    errorUpdateNoneImageMovie,
+  ]);
+  console.log("successAddUploadMovie", successAddUploadMovie);
+  useEffect(() => {
+    if (successAddUploadMovie) {
+      enqueueSnackbar(
+        `Thêm thành công phim: ${successAddUploadMovie.content.tenPhim}`,
+        {
+          variant: "success",
+        }
+      );
+    }
+    if (errorAddUploadMovie) {
+      enqueueSnackbar(errorAddUploadMovie, { variant: "error" });
+    }
+  }, [successAddUploadMovie, errorAddUploadMovie]);
+
+ 
   const handleEdit = (phimItem) => {
     selectedPhim.current = phimItem;
     setOpenModal(true);
   };
-
-  const onUpdate = (movieObj, hinhAnh, fakeImage) => {
+  const onUpdate = (movieObj) => {
     if (loadingUpdateMovie || loadingUpdateNoneImageMovie) {
       return undefined;
     }
     setOpenModal(false);
-    newImageUpdate.current = fakeImage;
-    if (typeof hinhAnh === "string") {
-      // nếu dùng updateMovieUpload sẽ bị reset danhGia về 10
-      const movieUpdate = movieListDisplay.find(
-        (movie) => movie.maPhim === fakeImage.maPhim
-      ); // lẩy ra url gốc, tránh gửi base64 tới backend
-      movieObj.hinhAnh = movieUpdate.hinhAnh;
 
-      return undefined;
+    dispatch(updateMovieUpload(movieObj));
+  };
+  const onAddMovie = (movieObj) => {
+    if (!loadingAddUploadMovie) {
+      dispatch(themPhimUploadHinhAction(movieObj));
     }
+    setOpenModal(false);
   };
 
   const handleAddMovie = () => {
@@ -89,13 +161,40 @@ export default function MoviesManagement() {
       trailer: "",
       hinhAnh: "",
       moTa: "",
-      maNhom: "GP02",
+      maNhom: "",
       ngayKhoiChieu: "",
       danhGia: 10,
     };
     selectedPhim.current = emtySelectedPhim;
-
     setOpenModal(true);
+  };
+  const onFilter = () => {
+    // dùng useCallback, slugify bỏ dấu tiếng việt
+    let searchMovieListDisplay = movieListDisplay.filter((movie) => {
+      const matchTenPhim =
+        slugify(movie.tenPhim ?? "", modifySlugify)?.indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchMoTa =
+        slugify(movie.moTa ?? "", modifySlugify)?.indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchNgayKhoiChieu =
+        slugify(movie.ngayKhoiChieu ?? "", modifySlugify)?.indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      return matchTenPhim || matchMoTa || matchNgayKhoiChieu;
+    });
+    if (newImageUpdate.current && callApiChangeImageSuccess.current) {
+      // hiển thị hình bằng base64 thay vì url, lỗi react không hiển thị đúng hình mới cập nhật(đã cập hình thanh công nhưng url backend trả về giữ nguyên đường dẫn)
+      searchMovieListDisplay = searchMovieListDisplay.map((movie) => {
+        if (movie.maPhim === newImageUpdate.current.maPhim) {
+          return { ...movie, hinhAnh: newImageUpdate.current.srcImage };
+        }
+        return movie;
+      });
+    }
+    return searchMovieListDisplay;
   };
 
   const classes = useStyles();
@@ -112,14 +211,22 @@ export default function MoviesManagement() {
       field: "trailer",
       headerName: "Trailer",
       width: 150,
-      headerAlign: "center",
       editable: true,
+      renderCell: (params) => (
+        <div style={{ display: "inline-block" }}>
+          <ThumbnailYoutube urlYoutube={params.row.trailer} />
+        </div>
+      ),
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
     },
     {
       field: "hinhAnh",
       headerName: "Hình ảnh",
       type: "number",
       width: 150,
+      align: "center",
       headerAlign: "center",
       renderCell: (params) => RenderCellExpand(params),
     },
@@ -169,41 +276,8 @@ export default function MoviesManagement() {
       headerClassName: "custom-header",
     },
   ];
-  const onAddMovie = (movieObj) => {
-    dispatch(themPhimUploadHinhAction(movieObj));
-    setOpenModal(false);
-  };
 
   const modifySlugify = { lower: true, locale: "vi" };
-
-  const onFilter = () => {
-    // dùng useCallback, slugify bỏ dấu tiếng việt
-    let searchMovieListDisplay = movieListDisplay.filter((movie) => {
-      const matchTenPhim =
-        slugify(movie.tenPhim ?? "", modifySlugify)?.indexOf(
-          slugify(valueSearch, modifySlugify)
-        ) !== -1;
-      const matchMoTa =
-        slugify(movie.moTa ?? "", modifySlugify)?.indexOf(
-          slugify(valueSearch, modifySlugify)
-        ) !== -1;
-      const matchNgayKhoiChieu =
-        slugify(movie.ngayKhoiChieu ?? "", modifySlugify)?.indexOf(
-          slugify(valueSearch, modifySlugify)
-        ) !== -1;
-      return matchTenPhim || matchMoTa || matchNgayKhoiChieu;
-    });
-    if (newImageUpdate.current && callApiChangeImageSuccess.current) {
-      // hiển thị hình bằng base64 thay vì url, lỗi react không hiển thị đúng hình mới cập nhật(đã cập hình thanh công nhưng url backend trả về giữ nguyên đường dẫn)
-      searchMovieListDisplay = searchMovieListDisplay.map((movie) => {
-        if (movie.maPhim === newImageUpdate.current.maPhim) {
-          return { ...movie, hinhAnh: newImageUpdate.current.srcImage };
-        }
-        return movie;
-      });
-    }
-    return searchMovieListDisplay;
-  };
 
   return (
     <div style={{ height: "80vh", width: "100%" }}>
@@ -229,7 +303,7 @@ export default function MoviesManagement() {
               color="primary"
               className={classes.addMovie}
               onClick={handleAddMovie}
-              // disabled={loadingAddUploadMovie}
+              disabled={loadingAddUploadMovie}
               startIcon={<AddBoxIcon />}
             >
               thêm phim
@@ -244,6 +318,12 @@ export default function MoviesManagement() {
         pageSize={25}
         // checkboxSelection
         rowsPerPageOptions={[10, 25, 50]}
+        // hiện loading khi
+        loading={
+          loadingUpdateMovie ||
+          loadingMovieList ||
+          loadingUpdateNoneImageMovie
+        }
         components={{
           LoadingOverlay: CustomLoadingOverlay,
           Toolbar: GridToolbar,

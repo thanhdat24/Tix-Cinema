@@ -55,15 +55,15 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
   });
 
   const handleSubmit = (movieObj) => {
-    let hinhAnh = movieObj.hinhAnh;
-    let fakeImage = { srcImage, maPhim: movieObj.maPhim };
+    // let hinhAnh = movieObj.hinhAnh;
+    // let fakeImage = { srcImage, maPhim: movieObj.maPhim };
     movieObj = {
       ...movieObj,
       ngayKhoiChieu: movieObj.ngayKhoiChieu.toLocaleDateString("en-GB"),
     };
 
     if (selectedPhim.maPhim) {
-      onUpdate(movieObj, hinhAnh, fakeImage);
+      onUpdate(movieObj);
       return;
     }
     const newMovieObj = { ...movieObj };
@@ -124,8 +124,12 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
                   accept=".jpg,.png"
                   id="contained-button-file"
                   className="form-control"
-                  onChange={(e) => {
-                    formikProp.setFieldValue("hinhAnh", e.target.files[0]);
+                  // thêm async await vào để setFieldValue xong mới thêm hình ảnh không lỗi update sever
+                  onChange={async (e) => {
+                    await formikProp.setFieldValue(
+                      "hinhAnh",
+                      e.target.files[0]
+                    );
                     setThumbnailPreviews(e);
                   }}
                 />
