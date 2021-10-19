@@ -17,7 +17,6 @@ import Form from "./Form";
 
 import {
   deleteMovie,
-  getFilmManagementAction,
   getMovieListManagement,
   resetMoviesManagement,
   themPhimUploadHinhAction,
@@ -44,14 +43,11 @@ export default function MoviesManagement() {
   console.log("selectedPhim", selectedPhim);
   const dispatch = useDispatch();
   let {
-    arrFilm2,
+    arrFilmDefault,
     loadingUpdateMovie,
-    loadingUpdateNoneImageMovie,
     successAddUploadMovie,
     successUpdateMovie,
-    successUpdateNoneImageMovie,
     errorUpdateMovie,
-    errorUpdateNoneImageMovie,
     errorAddUploadMovie,
     loadingAddUploadMovie,
     loadingMovieList,
@@ -59,16 +55,14 @@ export default function MoviesManagement() {
     errorDeleteMovie,
     successDeleteMovie,
   } = useSelector((state) => state.FilmManagementReducer);
-  // console.log("arrFilmDefault", arrFilmDefault);
-  console.log("arrFilm2", arrFilm2);
+  console.log("arrFilmDefault", arrFilmDefault);
 
   useEffect(() => {
     if (
-      !arrFilm2 ||
+      arrFilmDefault ||
       successUpdateMovie ||
       successDeleteMovie ||
       errorDeleteMovie ||
-      successUpdateNoneImageMovie ||
       successAddUploadMovie
     ) {
       dispatch(getMovieListManagement());
@@ -77,7 +71,6 @@ export default function MoviesManagement() {
     successUpdateMovie,
     successDeleteMovie,
     errorDeleteMovie,
-    successUpdateNoneImageMovie,
     successAddUploadMovie,
   ]);
   useEffect(() => {
@@ -86,15 +79,15 @@ export default function MoviesManagement() {
     };
   }, []);
   useEffect(() => {
-    if (arrFilm2) {
-      let newMovieListDisplay = arrFilm2.map((movie) => ({
+    if (arrFilmDefault) {
+      let newMovieListDisplay = arrFilmDefault.map((movie) => ({
         ...movie,
         hanhDong: "",
         id: movie.maPhim,
       }));
       setMovieListDisplay(newMovieListDisplay);
     }
-  }, [arrFilm2]);
+  }, [arrFilmDefault]);
 
   useEffect(() => {
     // delete movie xong thì thông báo
@@ -111,27 +104,24 @@ export default function MoviesManagement() {
   }, [errorDeleteMovie, successDeleteMovie]);
 
   useEffect(() => {
-    if (successUpdateMovie || successUpdateNoneImageMovie) {
+    console.log("successUpdateMovie", successUpdateMovie);
+    if (successUpdateMovie ) {
       callApiChangeImageSuccess.current = true;
       enqueueSnackbar(
-        `Update thành công phim: ${successUpdateMovie.tenPhim ?? ""}${
-          successUpdateNoneImageMovie.tenPhim ?? ""
-        }`,
+        `Update thành công phim: ${successUpdateMovie.tenPhim ?? ""}`,
         { variant: "success" }
       );
     }
-    if (errorUpdateMovie || errorUpdateNoneImageMovie) {
+    if (errorUpdateMovie) {
       callApiChangeImageSuccess.current = false;
       enqueueSnackbar(
-        `${errorUpdateMovie ?? ""}${errorUpdateNoneImageMovie ?? ""}`,
+        `${errorUpdateMovie ?? ""}`,
         { variant: "error" }
       );
     }
   }, [
     successUpdateMovie,
     errorUpdateMovie,
-    successUpdateNoneImageMovie,
-    errorUpdateNoneImageMovie,
   ]);
   useEffect(() => {
     if (successAddUploadMovie) {
@@ -159,7 +149,7 @@ export default function MoviesManagement() {
     setOpenModal(true);
   };
   const onUpdate = (movieObj) => {
-    if (loadingUpdateMovie || loadingUpdateNoneImageMovie) {
+    if (loadingUpdateMovie) {
       return undefined;
     }
     setOpenModal(false);
@@ -230,7 +220,7 @@ export default function MoviesManagement() {
     {
       field: "trailer",
       headerName: "Trailer",
-      width: 150,
+      width: 130,
       editable: true,
       renderCell: (params) => (
         <div style={{ display: "inline-block" }}>
@@ -342,8 +332,7 @@ export default function MoviesManagement() {
         loading={
           loadingUpdateMovie ||
           loadingDeleteMovie ||
-          loadingMovieList ||
-          loadingUpdateNoneImageMovie
+          loadingMovieList 
         }
         components={{
           LoadingOverlay: CustomLoadingOverlay,

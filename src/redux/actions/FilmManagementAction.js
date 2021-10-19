@@ -15,6 +15,9 @@ import {
   DELETE_MOVIE_REQUEST,
   DELETE_MOVIE_SUCCESS,
   DELETE_MOVIE_FAIL,
+  UPDATE_NONEIMAGE_MOVIE_REQUEST,
+  UPDATE_NONEIMAGE_MOVIE_SUCCESS,
+  UPDATE_NONEIMAGE_MOVIE_FAIL,
 } from "../actions/types/MovieType";
 import moviesApi from "../../api/moviesApi";
 
@@ -41,7 +44,7 @@ export const getMovieListManagement = () => {
       .then((result) => {
         dispatch({
           type: GET_MOVIE_LIST_SUCCESS,
-          payload: { data: result.data },
+          payload: result.data.content,
         });
       })
       .catch((error) => {
@@ -66,9 +69,8 @@ export const themPhimUploadHinhAction = (movieObj) => {
       .then((result) => {
         dispatch({
           type: ADD_MOVIE_UPLOAD_SUCCESS,
-          payload: { data: result.data },
+          payload: result.data.content,
         });
-        dispatch(getFilmManagementAction());
       })
       .catch((error) => {
         dispatch({
@@ -91,9 +93,8 @@ export const updateMovieUpload = (phimObj) => {
       .then((result) => {
         dispatch({
           type: POST_UPDATE_MOVIE_SUCCESS,
-          payload: { data: result.data },
+          payload: result.data.content,
         });
-        // dispatch(getMovieListManagement());
       })
       .catch((error) => {
         dispatch({
@@ -105,6 +106,7 @@ export const updateMovieUpload = (phimObj) => {
       });
   };
 };
+
 
 export const deleteMovie = (maPhim) => {
   return (dispatch) => {

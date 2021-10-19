@@ -55,8 +55,6 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
   });
 
   const handleSubmit = (movieObj) => {
-    // let hinhAnh = movieObj.hinhAnh;
-    // let fakeImage = { srcImage, maPhim: movieObj.maPhim };
     movieObj = {
       ...movieObj,
       ngayKhoiChieu: movieObj.ngayKhoiChieu.toLocaleDateString("en-GB"),

@@ -94,7 +94,6 @@ const useStyles = makeStyles((theme) => {
 
     rootTrailer: {
       cursor: "pointer",
-      display: "inline-block",
       width: 50,
       height: 50,
       position: "relative",

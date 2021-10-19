@@ -87,7 +87,7 @@ const FilmManagementReducer = (state = initialState, action) => {
     case ADD_MOVIE_UPLOAD_SUCCESS: {
       return {
         ...state,
-        successAddUploadMovie: action.payload.data,
+        successAddUploadMovie: action.payload,
         loadingAddUploadMovie: false,
       };
     }
@@ -106,9 +106,10 @@ const FilmManagementReducer = (state = initialState, action) => {
       };
     }
     case GET_MOVIE_LIST_SUCCESS: {
+      state.arrFilm = action.payload;
+      state.arrFilmDefault = state.arrFilm;
       return {
         ...state,
-        arrFilm2: action.payload.data,
         loadingMovieList: false,
       };
     }
@@ -126,7 +127,7 @@ const FilmManagementReducer = (state = initialState, action) => {
     case POST_UPDATE_MOVIE_SUCCESS: {
       return {
         ...state,
-        successUpdateMovie: action.payload.data,
+        successUpdateMovie: action.payload,
         loadingUpdateMovie: false,
       };
     }
