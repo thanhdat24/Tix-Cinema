@@ -93,7 +93,7 @@ export const updateMovieUpload = (phimObj) => {
           type: POST_UPDATE_MOVIE_SUCCESS,
           payload: { data: result.data },
         });
-        dispatch(getFilmManagementAction());
+        // dispatch(getMovieListManagement());
       })
       .catch((error) => {
         dispatch({
@@ -106,7 +106,32 @@ export const updateMovieUpload = (phimObj) => {
   };
 };
 
-
+export const deleteMovie = (maPhim) => {
+  return (dispatch) => {
+    dispatch({
+      type: DELETE_MOVIE_REQUEST,
+    });
+    moviesApi
+      .deleteMovie(maPhim)
+      .then((result) => {
+        dispatch({
+          type: DELETE_MOVIE_SUCCESS,
+          payload: { data: result.data },
+        });
+        console.log("payload delete", result.data);
+        // dispatch(getMovieListManagement());
+      })
+      .catch((error) => {
+        const message = error?.response?.data
+          ? error.response.data
+          : "Xóa thành công nhưng backend return error";
+        dispatch({
+          type: DELETE_MOVIE_FAIL,
+          payload: { error: message },
+        });
+      });
+  };
+};
 
 export const resetMoviesManagement = () => {
   return (dispatch) => {

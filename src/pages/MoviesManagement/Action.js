@@ -16,7 +16,7 @@ export default function ButtonDelete({ onDeleted, phimItem, onEdit }) {
           color="primary"
           // style={{ color: isMovieSetShowtime ? "#00000042" : "#f50057" }}
           style={{ color: "#f50057" }}
-          // onClick={() => onDeleted(phimItem.maPhim)}
+          onClick={() => onDeleted(phimItem.maPhim)}
         >
           <DeleteForeverIcon />
         </IconButton>

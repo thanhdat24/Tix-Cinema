@@ -16,6 +16,7 @@ import Dialog from "@material-ui/core/Dialog";
 import Form from "./Form";
 
 import {
+  deleteMovie,
   getFilmManagementAction,
   getMovieListManagement,
   resetMoviesManagement,
@@ -42,8 +43,8 @@ export default function MoviesManagement() {
   const selectedPhim = useRef(null);
   console.log("selectedPhim", selectedPhim);
   const dispatch = useDispatch();
-  const {
-    arrFilmDefault,
+  let {
+    arrFilm2,
     loadingUpdateMovie,
     loadingUpdateNoneImageMovie,
     successAddUploadMovie,
@@ -54,19 +55,19 @@ export default function MoviesManagement() {
     errorAddUploadMovie,
     loadingAddUploadMovie,
     loadingMovieList,
+    loadingDeleteMovie,
+    errorDeleteMovie,
     successDeleteMovie,
   } = useSelector((state) => state.FilmManagementReducer);
   // console.log("arrFilmDefault", arrFilmDefault);
-  console.log("arrFilmDefault", arrFilmDefault);
-  useEffect(() => {
-    dispatch(getFilmManagementAction());
-  }, []);
+  console.log("arrFilm2", arrFilm2);
 
   useEffect(() => {
     if (
-      !arrFilmDefault ||
+      !arrFilm2 ||
       successUpdateMovie ||
       successDeleteMovie ||
+      errorDeleteMovie ||
       successUpdateNoneImageMovie ||
       successAddUploadMovie
     ) {
@@ -75,6 +76,7 @@ export default function MoviesManagement() {
   }, [
     successUpdateMovie,
     successDeleteMovie,
+    errorDeleteMovie,
     successUpdateNoneImageMovie,
     successAddUploadMovie,
   ]);
@@ -84,22 +86,35 @@ export default function MoviesManagement() {
     };
   }, []);
   useEffect(() => {
-    if (arrFilmDefault) {
-      let newMovieListDisplay = arrFilmDefault.map((movie) => ({
+    if (arrFilm2) {
+      let newMovieListDisplay = arrFilm2.map((movie) => ({
         ...movie,
         hanhDong: "",
         id: movie.maPhim,
       }));
       setMovieListDisplay(newMovieListDisplay);
     }
-  }, [arrFilmDefault]);
+  }, [arrFilm2]);
 
-  
+  useEffect(() => {
+    // delete movie xong thì thông báo
+    if (errorDeleteMovie === "Xóa thành công nhưng backend return error") {
+      successDeleteMovie = "Xóa thành công !";
+    }
+    if (successDeleteMovie) {
+      enqueueSnackbar(successDeleteMovie, { variant: "success" });
+      return;
+    }
+    if (errorDeleteMovie) {
+      enqueueSnackbar(errorDeleteMovie, { variant: "error" });
+    }
+  }, [errorDeleteMovie, successDeleteMovie]);
+
   useEffect(() => {
     if (successUpdateMovie || successUpdateNoneImageMovie) {
       callApiChangeImageSuccess.current = true;
       enqueueSnackbar(
-        `Update thành công phim: ${successUpdateMovie.content.tenPhim ?? ""}${
+        `Update thành công phim: ${successUpdateMovie.tenPhim ?? ""}${
           successUpdateNoneImageMovie.tenPhim ?? ""
         }`,
         { variant: "success" }
@@ -118,11 +133,10 @@ export default function MoviesManagement() {
     successUpdateNoneImageMovie,
     errorUpdateNoneImageMovie,
   ]);
-  console.log("successAddUploadMovie", successAddUploadMovie);
   useEffect(() => {
     if (successAddUploadMovie) {
       enqueueSnackbar(
-        `Thêm thành công phim: ${successAddUploadMovie.content.tenPhim}`,
+        `Thêm thành công phim: ${successAddUploadMovie.tenPhim}`,
         {
           variant: "success",
         }
@@ -133,7 +147,13 @@ export default function MoviesManagement() {
     }
   }, [successAddUploadMovie, errorAddUploadMovie]);
 
- 
+  // xóa một phim
+  const handleDeleteOne = (maPhim) => {
+    if (!loadingDeleteMovie) {
+      // nếu click xóa liên tục một user
+      dispatch(deleteMovie(maPhim));
+    }
+  };
   const handleEdit = (phimItem) => {
     selectedPhim.current = phimItem;
     setOpenModal(true);
@@ -267,7 +287,7 @@ export default function MoviesManagement() {
       renderCell: (params) => (
         <Action
           onEdit={handleEdit}
-          // onDeleted={handleDeleteOne}
+          onDeleted={handleDeleteOne}
           phimItem={params.row}
         />
       ),
@@ -321,6 +341,7 @@ export default function MoviesManagement() {
         // hiện loading khi
         loading={
           loadingUpdateMovie ||
+          loadingDeleteMovie ||
           loadingMovieList ||
           loadingUpdateNoneImageMovie
         }

@@ -26,6 +26,9 @@ const moviesApi = {
     return axiosClient.post(path, formData);
   },
 
-  
+  deleteMovie: (maPhim) => {
+    const path = `/api/QuanLyPhim/XoaPhim?MaPhim=${maPhim}`;
+    return axiosClient.delete(path);
+  },
 };
 export default moviesApi;

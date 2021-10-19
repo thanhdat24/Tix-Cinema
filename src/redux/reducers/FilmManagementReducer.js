@@ -26,7 +26,7 @@ const initialState = {
   errorMovieList: null,
   arrFilmDefault: [],
 
-  arrFilm2: [],
+  arrFilm2: null,
   dangChieu: true,
   sapChieu: true,
 
@@ -34,6 +34,9 @@ const initialState = {
   loadingUpdateMovie: false,
   errorUpdateMovie: null,
 
+  successDeleteMovie: "",
+  loadingDeleteMovie: false,
+  errorDeleteMovie: null,
 
   successUpdateNoneImageMovie: "",
   loadingUpdateNoneImageMovie: false,
@@ -132,6 +135,24 @@ const FilmManagementReducer = (state = initialState, action) => {
         ...state,
         errorUpdateMovie: action.payload.error,
         loadingUpdateMovie: false,
+      };
+    }
+
+    case DELETE_MOVIE_REQUEST: {
+      return { ...state, loadingDeleteMovie: true, errorDeleteMovie: null };
+    }
+    case DELETE_MOVIE_SUCCESS: {
+      return {
+        ...state,
+        successDeleteMovie: action.payload.data,
+        loadingDeleteMovie: false,
+      };
+    }
+    case DELETE_MOVIE_FAIL: {
+      return {
+        ...state,
+        errorDeleteMovie: action.payload.error,
+        loadingDeleteMovie: false,
       };
     }
     case RESET_MOVIE_MANAGEMENT: {
