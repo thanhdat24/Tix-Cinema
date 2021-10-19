@@ -1,4 +1,4 @@
-export const DOMAIN = "https://movie0706.cybersoft.edu.vn";
+export const DOMAIN = "http://movieapi.cyberlearn.vn";
 // export const FAKE_AVATAR = `https://i.pravatar.cc/300?u=${avtIdUser}`;
 export const TOKEN = "accessToken ";
 export const GPID = "GP02";
@@ -9,5 +9,3 @@ export const STATUS_CODE = {
 };
 
 export const USER_LOGIN = "USER_LOGIN";
-
-
