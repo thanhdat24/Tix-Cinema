@@ -38,10 +38,6 @@ const initialState = {
   loadingDeleteMovie: false,
   errorDeleteMovie: null,
 
-  successUpdateNoneImageMovie: "",
-  loadingUpdateNoneImageMovie: false,
-  errorUpdateNoneImageMovie: null,
-
   successAddUploadMovie: "",
   loadingAddUploadMovie: false,
   errorAddUploadMovie: null,
@@ -94,7 +90,7 @@ const FilmManagementReducer = (state = initialState, action) => {
     case ADD_MOVIE_UPLOAD_FAIL: {
       return {
         ...state,
-        errorAddUploadMovie: action.payload.error,
+        errorAddUploadMovie: action.payload,
         loadingAddUploadMovie: false,
       };
     }
@@ -116,7 +112,7 @@ const FilmManagementReducer = (state = initialState, action) => {
     case GET_MOVIE_LIST_FAIL: {
       return {
         ...state,
-        errorMovieList: action.payload.errorMovieList,
+        errorMovieList: action.payload,
         loadingMovieList: false,
       };
     }
@@ -145,14 +141,14 @@ const FilmManagementReducer = (state = initialState, action) => {
     case DELETE_MOVIE_SUCCESS: {
       return {
         ...state,
-        successDeleteMovie: action.payload.data,
+        successDeleteMovie: action.payload,
         loadingDeleteMovie: false,
       };
     }
     case DELETE_MOVIE_FAIL: {
       return {
         ...state,
-        errorDeleteMovie: action.payload.error,
+        errorDeleteMovie: action.payload,
         loadingDeleteMovie: false,
       };
     }
@@ -169,10 +165,6 @@ const FilmManagementReducer = (state = initialState, action) => {
         successUpdateMovie: "",
         loadingUpdateMovie: false,
         errorUpdateMovie: null,
-
-        successUpdateNoneImageMovie: "",
-        loadingUpdateNoneImageMovie: false,
-        errorUpdateNoneImageMovie: null,
 
         successAddUploadMovie: "",
         loadingAddUploadMovie: false,

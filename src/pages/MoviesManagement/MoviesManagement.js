@@ -20,7 +20,6 @@ import {
   getMovieListManagement,
   resetMoviesManagement,
   themPhimUploadHinhAction,
-  updateMovie,
   updateMovieUpload,
 } from "../../redux/actions/FilmManagementAction";
 import ThumbnailYoutube from "./ThumbnailYoutube";
@@ -72,7 +71,8 @@ export default function MoviesManagement() {
     successDeleteMovie,
     errorDeleteMovie,
     successAddUploadMovie,
-  ]);
+  ]); // khi vừa thêm phim mới xong mà xóa liên backend sẽ báo lỗi xóa không được nhưng thực chất đã xóa thành công > errorDeleteMovie nhưng vẫn tiến hành làm mới lại danh sách
+
   useEffect(() => {
     return () => {
       dispatch(resetMoviesManagement());
@@ -88,7 +88,7 @@ export default function MoviesManagement() {
       setMovieListDisplay(newMovieListDisplay);
     }
   }, [arrFilmDefault]);
-
+  console.log("successDeleteMovie",  successDeleteMovie);
   useEffect(() => {
     // delete movie xong thì thông báo
     if (errorDeleteMovie === "Xóa thành công nhưng backend return error") {
@@ -104,8 +104,7 @@ export default function MoviesManagement() {
   }, [errorDeleteMovie, successDeleteMovie]);
 
   useEffect(() => {
-    console.log("successUpdateMovie", successUpdateMovie);
-    if (successUpdateMovie ) {
+    if (successUpdateMovie) {
       callApiChangeImageSuccess.current = true;
       enqueueSnackbar(
         `Update thành công phim: ${successUpdateMovie.tenPhim ?? ""}`,
@@ -114,15 +113,9 @@ export default function MoviesManagement() {
     }
     if (errorUpdateMovie) {
       callApiChangeImageSuccess.current = false;
-      enqueueSnackbar(
-        `${errorUpdateMovie ?? ""}`,
-        { variant: "error" }
-      );
+      enqueueSnackbar(`${errorUpdateMovie ?? ""}`, { variant: "error" });
     }
-  }, [
-    successUpdateMovie,
-    errorUpdateMovie,
-  ]);
+  }, [successUpdateMovie, errorUpdateMovie]);
   useEffect(() => {
     if (successAddUploadMovie) {
       enqueueSnackbar(
@@ -138,6 +131,7 @@ export default function MoviesManagement() {
   }, [successAddUploadMovie, errorAddUploadMovie]);
 
   // xóa một phim
+  console.log("loadingDeleteMovie", loadingDeleteMovie);
   const handleDeleteOne = (maPhim) => {
     if (!loadingDeleteMovie) {
       // nếu click xóa liên tục một user
@@ -329,11 +323,7 @@ export default function MoviesManagement() {
         // checkboxSelection
         rowsPerPageOptions={[10, 25, 50]}
         // hiện loading khi
-        loading={
-          loadingUpdateMovie ||
-          loadingDeleteMovie ||
-          loadingMovieList 
-        }
+        loading={loadingUpdateMovie || loadingDeleteMovie || loadingMovieList}
         components={{
           LoadingOverlay: CustomLoadingOverlay,
           Toolbar: GridToolbar,

@@ -50,15 +50,12 @@ export const getMovieListManagement = () => {
       .catch((error) => {
         dispatch({
           type: GET_MOVIE_LIST_FAIL,
-          payload: {
-            errorMovieList: error.response?.data
-              ? error.response.data
-              : error.message,
-          },
+          payload: error.response?.data ? error.response.data : error.message,
         });
       });
   };
 };
+
 export const themPhimUploadHinhAction = (movieObj) => {
   return (dispatch) => {
     dispatch({
@@ -75,9 +72,7 @@ export const themPhimUploadHinhAction = (movieObj) => {
       .catch((error) => {
         dispatch({
           type: ADD_MOVIE_UPLOAD_FAIL,
-          payload: {
-            error: error.response?.data ? error.response.data : error.message,
-          },
+          payload: error.response?.data ? error.response.data : error.message,
         });
       });
   };
@@ -107,7 +102,6 @@ export const updateMovieUpload = (phimObj) => {
   };
 };
 
-
 export const deleteMovie = (maPhim) => {
   return (dispatch) => {
     dispatch({
@@ -118,10 +112,9 @@ export const deleteMovie = (maPhim) => {
       .then((result) => {
         dispatch({
           type: DELETE_MOVIE_SUCCESS,
-          payload: { data: result.data },
+          payload: result.data.content,
         });
-        console.log("payload delete", result.data);
-        // dispatch(getMovieListManagement());
+        dispatch(getMovieListManagement());
       })
       .catch((error) => {
         const message = error?.response?.data
