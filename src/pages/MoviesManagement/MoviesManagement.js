@@ -37,6 +37,7 @@ export default function MoviesManagement() {
   const newImageUpdate = useRef("");
   const callApiChangeImageSuccess = useRef(false);
   const { enqueueSnackbar } = useSnackbar();
+  const clearSetSearch = useRef(0);
   const [openModal, setOpenModal] = React.useState(false);
   const selectedPhim = useRef(null);
   console.log("selectedPhim", selectedPhim);
@@ -88,7 +89,7 @@ export default function MoviesManagement() {
       setMovieListDisplay(newMovieListDisplay);
     }
   }, [arrFilmDefault]);
-  console.log("successDeleteMovie",  successDeleteMovie);
+
   useEffect(() => {
     // delete movie xong thì thông báo
     if (errorDeleteMovie === "Xóa thành công nhưng backend return error") {
@@ -131,7 +132,6 @@ export default function MoviesManagement() {
   }, [successAddUploadMovie, errorAddUploadMovie]);
 
   // xóa một phim
-  console.log("loadingDeleteMovie", loadingDeleteMovie);
   const handleDeleteOne = (maPhim) => {
     if (!loadingDeleteMovie) {
       // nếu click xóa liên tục một user
@@ -172,6 +172,14 @@ export default function MoviesManagement() {
     selectedPhim.current = emtySelectedPhim;
     setOpenModal(true);
   };
+
+  const handleInputSearchChange = (props) => {
+    clearTimeout(clearSetSearch.current);
+    clearSetSearch.current = setTimeout(() => {
+      setValueSearch(props);
+    }, 500);
+  };
+
   const onFilter = () => {
     // dùng useCallback, slugify bỏ dấu tiếng việt
     let searchMovieListDisplay = movieListDisplay.filter((movie) => {
@@ -298,6 +306,7 @@ export default function MoviesManagement() {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                onChange={(evt) => handleInputSearchChange(evt.target.value)}
               />
             </div>
           </div>
