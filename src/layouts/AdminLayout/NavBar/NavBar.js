@@ -38,9 +38,6 @@ const items = [
   },
 ];
 const useStyles = makeStyles(() => ({
-  mobileDrawer: {
-    width: 256,
-  },
   desktopDrawer: {
     width: 256,
     top: 64,
@@ -52,7 +49,7 @@ const useStyles = makeStyles(() => ({
     height: 64,
   },
 }));
-export default function NavBar({ onMobileClose, openMobile }) {
+export default function NavBar() {
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
@@ -94,6 +91,7 @@ export default function NavBar({ onMobileClose, openMobile }) {
         </Typography>
       </Box>
       <Divider />
+
       {/* đây là phần menu lựa chọn */}
       <Box p={2}>
         <List>
@@ -112,18 +110,6 @@ export default function NavBar({ onMobileClose, openMobile }) {
   );
   return (
     <>
-      {/* đây là giao diện mobile */}
-      <Hidden lgUp>
-        <Drawer
-          anchor="left"
-          classes={{ paper: classes.mobileDrawer }}
-          onClose={onMobileClose}
-          open={openMobile} // đóng mở tùy thuộc vào bạn click
-          variant="temporary" // kiểu temporary có một lớp phủ mờ hiện ra cho đến khi bạn chọn xong thì Drawer mới đóng lại
-        >
-          {content}
-        </Drawer>
-      </Hidden>
       {/* đây là giao diện desktop */}
       <Hidden mdDown>
         <Drawer

@@ -18,6 +18,7 @@ import Checkout from "./pages/BookingTicket/Checkout/Checkout";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminTemplate from "./templates/AdminTemplate/AdminTemplate";
 import MoviesManagement from "./pages/MoviesManagement/MoviesManagement";
+import CreateShowtime from "./pages/CreateShowtime/CreateShowtime";
 export const history = createBrowserHistory();
 
 const CheckoutTemplateLazy = lazy(() =>
@@ -41,18 +42,13 @@ function App() {
           <AdminLayout>
             <AdminTemplate
               exact
-              path="/admin/users"
-              // component={UsersManagement}
-            />
-            <AdminTemplate
-              exact
               path="/admin/movies"
               component={MoviesManagement}
             />
             <AdminTemplate
               exact
               path="/admin/showtimes"
-              // component={CreateShowtime}
+              component={CreateShowtime}
             />
           </AdminLayout>
         </Route>

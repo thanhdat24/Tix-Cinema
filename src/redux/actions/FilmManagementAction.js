@@ -90,6 +90,8 @@ export const updateMovieUpload = (phimObj) => {
           type: POST_UPDATE_MOVIE_SUCCESS,
           payload: result.data.content,
         });
+        // dispatch(getMovieListManagement());
+        console.log("success");
       })
       .catch((error) => {
         dispatch({
@@ -98,6 +100,10 @@ export const updateMovieUpload = (phimObj) => {
             error: error.response?.data ? error.response.data : error.message,
           },
         });
+        console.log("error", error);
+        console.log("error.response", error.response);
+        console.log("error.response.data", error.response.data);
+        console.log("error.response.data.content", error.response.data.content);
       });
   };
 };

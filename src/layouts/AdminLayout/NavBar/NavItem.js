@@ -42,35 +42,14 @@ const useStyles = makeStyles((theme) => ({
 
 const NavItem = ({ className, href, icon: Icon, title, ...rest }) => {
   // const isExistUserModified = useSelector(
-  //   (state) => state.usersManagementReducer.isExistUserModified
+  //   (state) => state.UsersManagementReducer.isExistUserModified
   // );
   const classes = useStyles();
   const history = useHistory();
   let location = useLocation();
-  // const onChangePageManagement = () => {
-  //   if (
-  //     isExistUserModified &&
-  //     location.pathname === "/admin/users" &&
-  //     href !== "/admin/users"
-  //   ) {
-  //     Swal.fire({
-  //       title: "Dữ liệu đã chỉnh sửa sẽ bị mất khi chuyển trang?",
-  //       text: "Bạn không thể hoàn nguyên!",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#d33",
-  //       cancelButtonColor: "#3085d6",
-  //       confirmButtonText: "Chuyển trang!",
-  //       cancelButtonText: "Ở lại!",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         history.push(href);
-  //       }
-  //     });
-  //   } else {
-  //     history.push(href);
-  //   }
-  // };
+  const onChangePageManagement = () => {
+    history.push(href);
+  };
   return (
     <ListItem
       className={clsx(classes.item, className)}
@@ -82,7 +61,7 @@ const NavItem = ({ className, href, icon: Icon, title, ...rest }) => {
           classes.button,
           location.pathname === href && classes.active
         )}
-        // onClick={onChangePageManagement}
+        onClick={onChangePageManagement}
       >
         {Icon && <Icon className={classes.icon} size="20" />}
         <span className={classes.title}>{title}</span>
