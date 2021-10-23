@@ -14,5 +14,6 @@ export class CinemaManagementService extends baseService {
   layThongTinLichChieuPhim = (maPhim) => {
     return this.get(`/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`);
   };
+
 }
 export const cinemaManagementService = new CinemaManagementService();

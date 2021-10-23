@@ -1,6 +1,6 @@
 import { fade, makeStyles } from "@material-ui/core/styles";
 // import { customScrollbar } from "../../styles/materialUi";
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const materialTheme = createMuiTheme({
+const materialTheme = createTheme({
   overrides: {
     MuiPickersToolbar: {
       toolbar: {

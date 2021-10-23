@@ -4,6 +4,10 @@ import {
   DAT_GHE_SUCCESS,
   SET_LIST_PHONG_VE,
   CHANGE_STATUS_ACTIVE,
+  CREATE_SHOWTIME_REQUEST,
+  CREATE_SHOWTIME_SUCCESS,
+  CREATE_SHOWTIME_FAIL,
+  RESET_CREATE_SHOWTIME,
 } from "../actions/types/BookingTicketManagementType";
 import { ThongTinPhongVe } from "../../_core/models/ThongTinPhongVe";
 const stateDefault = {
@@ -12,6 +16,10 @@ const stateDefault = {
   danhSachKhachDangDat: [{ maGhe: 52201 }, { maGhe: 52202 }],
   //  [{ maGhe: 52201 }, { maGhe: 52202 }],
   statusActive: 0,
+
+  loadingCreateShowtime: false,
+  successCreateShowtime: null,
+  errorCreateShowtime: null,
 };
 
 export const BookingTicketManagementReducer = (
@@ -50,6 +58,35 @@ export const BookingTicketManagementReducer = (
     }
     case "GHE_KHACH_DAT": {
       return { ...state, danhsachGheDangDat: action.arrGheKhachDat };
+    }
+
+    case CREATE_SHOWTIME_REQUEST: {
+      return {
+        ...state,
+        loadingCreateShowtime: true,
+        errorCreateShowtime: null,
+      };
+    }
+    case CREATE_SHOWTIME_SUCCESS: {
+      return {
+        ...state,
+        successCreateShowtime: action.payload,
+        loadingCreateShowtime: false,
+      };
+    }
+    case CREATE_SHOWTIME_FAIL: {
+      return {
+        ...state,
+        errorCreateShowtime: action.payload.error,
+        loadingCreateShowtime: false,
+      };
+    }
+
+    case RESET_CREATE_SHOWTIME: {
+      state.loadingCreateShowtime = false;
+      state.successCreateShowtime = null;
+      state.errorCreateShowtime = null;
+      return state;
     }
     default:
       return state;

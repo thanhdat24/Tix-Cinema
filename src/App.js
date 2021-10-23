@@ -35,10 +35,7 @@ function App() {
         <HomeTemplate path="/news" exact Component={News} />
         <HomeTemplate path="/detail/:id" exact Component={Detail} />
         <Route path="/profile" exact component={Profile} />
-        <Route
-          exact
-          path={["/admin/users", "/admin/movies", "/admin/showtimes"]}
-        >
+        <Route exact path={["/admin/movies", "/admin/showtimes"]}>
           <AdminLayout>
             <AdminTemplate
               exact

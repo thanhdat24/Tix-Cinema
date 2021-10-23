@@ -8,7 +8,13 @@ import {
   DAT_GHE_SUCCESS,
   DAT_GHE,
   SET_LIST_PHONG_VE,
+  CREATE_SHOWTIME_REQUEST,
+  CREATE_SHOWTIME_SUCCESS,
+  CREATE_SHOWTIME_FAIL,
+  RESET_CREATE_SHOWTIME,
 } from "./types/BookingTicketManagementType";
+import bookingApi from "../../api/bookingApi";
+
 import { DISPLAY_LOADING, HIDE_LOADING } from "./types/LoadingType";
 export const layDanhSachPhongVeAction = (maLichChieu) => {
   return async (dispatch) => {
@@ -77,5 +83,36 @@ export const datGheAction = (ghe, maLichChieu) => {
 
     //Call api signalR
     // connection.invoke("datGhe", taiKhoan, danhSachGheDangDat, maLichChieu);
+  };
+};
+
+export const createShowtime = (data) => {
+  return (dispatch) => {
+    dispatch({
+      type: CREATE_SHOWTIME_REQUEST,
+    });
+    bookingApi
+      .postTaoLichChieu(data)
+      .then((result) => {
+        dispatch({
+          type: CREATE_SHOWTIME_SUCCESS,
+          payload: result.data.content,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: CREATE_SHOWTIME_FAIL,
+          payload: {
+            error: error.response?.data ? error.response.data : error.message,
+          },
+        });
+      });
+  };
+};
+export const resetCreateShowtime = () => {
+  return (dispatch) => {
+    dispatch({
+      type: RESET_CREATE_SHOWTIME,
+    });
   };
 };

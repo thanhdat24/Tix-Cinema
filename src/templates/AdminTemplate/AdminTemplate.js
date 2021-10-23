@@ -13,13 +13,13 @@ const AdminTemplate = (props) => {
 
   return (
     <Route
-      {...restProps}
+      {...rest}
       render={(propsRoute) => {
         if (userLogin) {
           if (userLogin.maLoaiNguoiDung === "QuanTri") {
             return <ComponentAdmin {...propsRoute} />;
           }
-          // return <AlertCanNotAccess />;
+          // CanNotAccess
         }
         return (
           <Redirect
