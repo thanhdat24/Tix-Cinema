@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
@@ -9,6 +9,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDateTimePicker,
 } from "@material-ui/pickers";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import { ThemeProvider } from "@material-ui/styles";
 import DateFnsUtils from "@date-io/date-fns";
@@ -22,14 +23,33 @@ import {
 } from "../../redux/actions/BookingTicketManagementAction";
 import theatersApi from "../../api/theatersApi";
 import { useSnackbar } from "notistack";
+import { DataGrid, GridOverlay, GridToolbar } from "@material-ui/data-grid";
+
+import { CircularProgress, Tooltip } from "@material-ui/core";
+import slugify from "slugify";
+import { layDanhSachHeThongRap2Action } from "../../redux/actions/CinemaManagementAction";
+
+function CustomLoadingOverlay() {
+  return (
+    <GridOverlay>
+      <CircularProgress style={{ margin: "auto" }} />
+    </GridOverlay>
+  );
+}
 
 export default function CreateShowtime() {
   const { enqueueSnackbar } = useSnackbar();
-
+  const [lichChieuDisplay, setLichChieuDisplay] = useState([]);
   let { arrFilmDefault } = useSelector((state) => state.FilmManagementReducer);
+  const { theaterList, loadingTheaterList } = useSelector(
+    (state) => state.CinemaManagementReducer
+  );
   const { loadingCreateShowtime, successCreateShowtime, errorCreateShowtime } =
     useSelector((state) => state.BookingTicketManagementReducer);
   const dispatch = useDispatch();
+  const [valueSearch, setValueSearch] = useState("");
+  const clearSetSearch = useRef(0);
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [data, setData] = useState({
     setPhim: "",
@@ -48,6 +68,17 @@ export default function CreateShowtime() {
 
     setGiaVe: "",
     giaVeRender: [75000, 100000, 120000, 150000],
+
+    startRequest: false, // lựa chọn giữa hiện thị "đang tìm" hay "không tìm thấy"
+
+    openCtr: {
+      phim: false,
+      heThongRap: false,
+      cumRap: false,
+      rap: false,
+      ngayChieuGioChieu: false,
+      giaVe: false,
+    },
   });
 
   const [isReadyTaoLichChieu, setIsReadyTaoLichChieu] = useState(false);
@@ -57,6 +88,53 @@ export default function CreateShowtime() {
       dispatch(getMovieListManagement());
     }
   }, []);
+
+  useEffect(() => {
+    if (!theaterList.length) {
+      dispatch(layDanhSachHeThongRap2Action());
+    }
+  }, []);
+  console.log("theaterList", theaterList);
+  useEffect(() => {
+    const showTimeList = theaterList?.reduce((collect1, heThongRap) => {
+      return [
+        ...collect1,
+        ...heThongRap.lstCumRap?.reduce((collect2, cumRap) => {
+          return [
+            ...collect2,
+            ...cumRap.danhSachPhim?.reduce((collect3, phim) => {
+              return [
+                ...collect3,
+                ...phim.lstLichChieuTheoPhim?.reduce((collect4, lichChieu) => {
+                  return [
+                    ...collect4,
+                    {
+                      ...lichChieu,
+                      tenHeThongRap: heThongRap.tenHeThongRap,
+                      tenCumRap: cumRap.tenCumRap,
+                      maRap: lichChieu.maRap,
+                      tenRap: lichChieu.tenRap,
+                      logo: heThongRap.logo,
+                      diaChi: cumRap.diaChi,
+                      maPhim: phim.maPhim,
+                      tenPhim: phim.tenPhim,
+                      id: lichChieu.maLichChieu,
+                      ngayChieuGioChieu: `${lichChieu.ngayChieuGioChieu.slice(
+                        0,
+                        10
+                      )}, ${lichChieu.ngayChieuGioChieu.slice(11, 16)}`,
+                    },
+                  ];
+                }, []),
+              ];
+            }, []),
+          ];
+        }, []),
+      ];
+    }, []);
+    setLichChieuDisplay(showTimeList);
+  }, [theaterList]);
+
   console.log("data.setPhim", data.setPhim);
   console.log("data.ngayChieuGioChieu", data.ngayChieuGioChieu);
   console.log("data.maCumRap", data.maCumRap);
@@ -76,23 +154,97 @@ export default function CreateShowtime() {
   useEffect(() => {
     if (successCreateShowtime) {
       enqueueSnackbar(successCreateShowtime, { variant: "success" });
-      // dispatch(getTheaters2());
+      dispatch(layDanhSachHeThongRap2Action());
     }
     if (errorCreateShowtime) {
       enqueueSnackbar(errorCreateShowtime, { variant: "error" });
     }
     return () => dispatch(resetCreateShowtime());
   }, [errorCreateShowtime, successCreateShowtime]);
+
+  // Open, Close Selected Phim
+
+  const handleOpenPhim = () => {
+    setData((data) => ({ ...data, openCtr: { ...data.openCtr, phim: true } }));
+  };
+  const handleClosePhim = () => {
+    setData((data) => ({ ...data, openCtr: { ...data.openCtr, phim: false } }));
+  };
+
+  // Open, Close Selected Hệ Thống Rạp
+  const handleOpenHeThongRap = () => {
+    setData((data) => ({
+      ...data,
+      openCtr: { ...data.openCtr, heThongRap: true },
+    }));
+  };
+  const handleCloseHeThongRap = () => {
+    setData((data) => ({
+      ...data,
+      openCtr: { ...data.openCtr, heThongRap: false },
+    }));
+  };
+
+  // Open, Close Selected Cụm Rạp
+  const handleOpenCumRap = () => {
+    setData((data) => ({
+      ...data,
+      openCtr: { ...data.openCtr, cumRap: true },
+    }));
+  };
+  const handleCloseCumRap = () => {
+    setData((data) => ({
+      ...data,
+      openCtr: { ...data.openCtr, cumRap: false },
+    }));
+  };
+  // Open, Close Selected Rạp
+  const handleOpenRap = () => {
+    setData((data) => ({ ...data, openCtr: { ...data.openCtr, rap: true } }));
+  };
+  const handleCloseRap = () => {
+    setData((data) => ({ ...data, openCtr: { ...data.openCtr, rap: false } }));
+  };
+
+  // Open, Close Selected NgayChieuGioChieu
+  const handleOpenNgayChieuGioChieu = () => {
+    setData((data) => ({
+      ...data,
+      openCtr: { ...data.openCtr, ngayChieuGioChieu: true },
+    }));
+  };
+  const handleCloseNgayChieuGioChieu = () => {
+    setData((data) => ({
+      ...data,
+      openCtr: { ...data.openCtr, ngayChieuGioChieu: false },
+    }));
+  };
+
+  // Open, Close Selected GiaVe
+  const handleOpenGiaVe = () => {
+    setData((data) => ({ ...data, openCtr: { ...data.openCtr, giaVe: true } }));
+  };
+  const handleCloseGiaVe = () => {
+    setData((data) => ({
+      ...data,
+      openCtr: { ...data.openCtr, giaVe: false },
+    }));
+  };
+  // Handle Select values
   const handleSelectPhim = (e) => {
+    const isOpenHeThongRap = data.setHeThongRap ? false : true;
     setData((data) => ({
       ...data,
       setPhim: e.target.value,
+      startRequest: true,
+      openCtr: { ...data.openCtr, heThongRap: isOpenHeThongRap },
     }));
 
     theatersApi.getThongTinHeThongRap().then((result) => {
       setData((data) => ({
         ...data,
         heThongRapRender: result.data.content,
+        startRequest: false,
       }));
       console.log("handleSelectPhim", result.data.content);
     });
@@ -101,6 +253,13 @@ export default function CreateShowtime() {
     setData((data) => ({
       ...data,
       setHeThongRap: e.target.value.tenHeThongRap,
+      startRequest: true,
+      openCtr: { ...data.openCtr, cumRap: true },
+      //reset
+      setCumRap: "",
+      rapRender: [],
+      setRap: "",
+      maRap: "",
     }));
 
     theatersApi
@@ -109,6 +268,7 @@ export default function CreateShowtime() {
         setData((data) => ({
           ...data,
           cumRapRender: result.data.content,
+          startRequest: false,
         }));
         console.log("handleSelectHeThongRap", result.data.content);
       });
@@ -119,15 +279,24 @@ export default function CreateShowtime() {
       setCumRap: e.target.value.tenCumRap,
       rapRender: e.target.value.danhSachRap,
       maRap: e.target.value.maCumRap,
+      openCtr: { ...data.openCtr, rap: true },
+      //reset
+      setRap: "",
     }));
     console.log("handleSelectCumRap", e.target.value);
   };
 
   const handleSelectRap = (e) => {
+    const openNgayChieuGioChieu = data.ngayChieuGioChieu ? false : true;
+
     setData((data) => ({
       ...data,
       setRap: e.target.value.tenRap,
       maCumRap: e.target.value.maRap,
+      openCtr: {
+        ...data.openCtr,
+        ngayChieuGioChieu: openNgayChieuGioChieu,
+      },
     }));
     console.log("handleSelectRap", e.target.value);
   };
@@ -145,6 +314,10 @@ export default function CreateShowtime() {
           .getHours()
           .toString()
           .padStart(2, 0)}:${obj.getMinutes().toString().padStart(2, 0)}:00`,
+        openCtr: {
+          ...data.openCtr,
+          giaVe: true,
+        },
       }));
     }
     console.log("handleDateChange", date);
@@ -153,6 +326,7 @@ export default function CreateShowtime() {
     setData((data) => ({
       ...data,
       setGiaVe: e.target.value,
+      openCtr: { ...data.openCtr, giaVe: false },
     }));
     console.log(" e.target.value", e.target.value);
   };
@@ -172,6 +346,159 @@ export default function CreateShowtime() {
     ); // ngayChieuGioChieu phải có định dạng dd/MM/yyyy hh:mm:ss
   };
 
+  const handleInputSearchChange = (props) => {
+    clearTimeout(clearSetSearch.current);
+    clearSetSearch.current = setTimeout(() => {
+      setValueSearch(props);
+    }, 500);
+  };
+
+  const onFilter = () => {
+    const searchLichChieuDisplay = lichChieuDisplay.filter((lichChieu) => {
+      const matchTenHeThongRap =
+        slugify(lichChieu?.tenHeThongRap ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchTenCumRap =
+        slugify(lichChieu?.tenCumRap ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchDiaChi =
+        slugify(lichChieu?.diaChi ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchTenRap =
+        slugify(lichChieu?.tenRap ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchTenPhim =
+        slugify(lichChieu?.tenPhim ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchNgayChieuGioChieu =
+        slugify(
+          lichChieu?.ngayChieuGioChieu.toLocaleString() ?? "",
+          modifySlugify
+        ).indexOf(slugify(valueSearch, modifySlugify)) !== -1;
+      const matchGiaVe =
+        slugify(lichChieu?.giaVe.toString() ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchMaPhim =
+        slugify(lichChieu?.maPhim.toString() ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchMaRap =
+        slugify(lichChieu?.maRap.toString() ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      const matchMalichChieu =
+        slugify(lichChieu?.maLichChieu.toString() ?? "", modifySlugify).indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
+      return (
+        matchTenHeThongRap ||
+        matchTenCumRap ||
+        matchDiaChi ||
+        matchTenRap ||
+        matchTenPhim ||
+        matchNgayChieuGioChieu ||
+        matchGiaVe ||
+        matchMaPhim ||
+        matchMaRap ||
+        matchMalichChieu
+      );
+    });
+    return searchLichChieuDisplay;
+  };
+
+  const columns = [
+    {
+      field: "maLichChieu",
+      headerName: "Mã lịch chiếu",
+      hide: true,
+      width: 130,
+    },
+    { field: "logo", hide: true, width: 130 },
+    {
+      field: "tenHeThongRap",
+      headerName: "Hệ thống rạp",
+      width: 170,
+      renderCell: (params) => (
+        <Tooltip title={params.row.tenHeThongRap}>
+          <img
+            style={{
+              maxWidth: "100%",
+              height: "100%",
+              borderRadius: 4,
+              marginRight: 15,
+            }}
+            src={params.row.logo}
+            alt="logo hệ thống rạp"
+          />
+        </Tooltip>
+      ),
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+    {
+      field: "tenCumRap",
+      headerName: "Tên Cụm Rạp",
+      width: 300,
+      headerAlign: "center",
+      align: "left",
+      headerClassName: "custom-header",
+      // renderCell: RenderCellExpand,
+    },
+    {
+      field: "diaChi",
+      headerName: "Địa chỉ",
+      width: 258,
+      headerAlign: "center",
+      align: "left",
+      headerClassName: "custom-header",
+      // renderCell: RenderCellExpand,
+    },
+    {
+      field: "tenRap",
+      headerName: "Tên Rạp",
+      width: 200,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+    { field: "maRap", headerName: "Mã rạp", hide: true, width: 130 },
+    { field: "maPhim", headerName: "Mã phim", hide: true, width: 130 },
+    {
+      field: "tenPhim",
+      headerName: "Tên phim",
+      width: 250,
+      headerAlign: "center",
+      align: "left",
+      headerClassName: "custom-header",
+      // renderCell: RenderCellExpand,
+    },
+    {
+      field: "ngayChieuGioChieu",
+      headerName: "Ngày chiếu giờ chiếu",
+      width: 200,
+      type: "dateTime",
+      headerAlign: "center",
+      align: "left",
+      headerClassName: "custom-header",
+    },
+    {
+      field: "giaVe",
+      headerName: "Giá vé(vnđ)",
+      width: 130,
+      type: "number",
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+  ];
+
   const menuProps = {
     // props và class của menu(Popover)
     classes: { paper: classes.menu },
@@ -185,6 +512,9 @@ export default function CreateShowtime() {
       horizontal: "left",
     },
   };
+
+  const modifySlugify = { lower: true, locale: "vi" };
+
   return (
     <div style={{ height: "80vh", width: "100%" }}>
       <div className={classes.backgroundImg}>
@@ -196,15 +526,19 @@ export default function CreateShowtime() {
               fullWidth
             >
               <Select
+                open={data.openCtr.phim}
+                onClose={handleClosePhim}
+                onOpen={handleOpenPhim}
                 value={data.setPhim}
-                onChange={handleSelectPhim}
+                onChange={handleSelectPhim} // value={phim.maPhim} tự động truyền vào handleSelectPhim sau khi chọn phim
                 displayEmpty // hiển thị item đầu tiên
-                // MenuProps={menuProps}
+                IconComponent={ExpandMoreIcon}
+                MenuProps={menuProps}
               >
                 {" "}
                 <MenuItem
                   value=""
-                  // style={{ display: data.openCtr?.phim ? "none" : "block" }}
+                  style={{ display: data.openCtr?.phim ? "none" : "block" }}
                   classes={{
                     root: classes.menu__item,
                     selected: classes["menu__item--selected"],
@@ -234,6 +568,9 @@ export default function CreateShowtime() {
               fullWidth
             >
               <Select
+                open={data.openCtr.heThongRap}
+                onClose={handleCloseHeThongRap}
+                onOpen={handleOpenHeThongRap}
                 value={data.setHeThongRap}
                 onChange={handleSelectHeThongRap}
                 renderValue={(value) =>
@@ -283,10 +620,14 @@ export default function CreateShowtime() {
               fullWidth
             >
               <Select
+                open={data.openCtr.cumRap}
+                onClose={handleCloseCumRap}
+                onOpen={handleOpenCumRap}
                 value={data.setCumRap}
                 renderValue={(value) => `${value ? value : "Chọn cụm rạp"}`}
                 onChange={handleSelectCumRap}
                 displayEmpty // hiển thị item đầu tiên
+                MenuProps={menuProps}
               >
                 <MenuItem
                   value=""
@@ -328,10 +669,14 @@ export default function CreateShowtime() {
               fullWidth
             >
               <Select
+                open={data.openCtr.rap}
+                onClose={handleCloseRap}
+                onOpen={handleOpenRap}
                 value={data.setRap}
                 onChange={handleSelectRap}
                 displayEmpty // hiển thị item đầu tiên
                 renderValue={(value) => `${value ? value : "Chọn rạp"}`}
+                MenuProps={menuProps}
               >
                 <MenuItem
                   value=""
@@ -369,6 +714,9 @@ export default function CreateShowtime() {
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <ThemeProvider theme={materialTheme}>
                   <KeyboardDateTimePicker
+                    open={data.openCtr.ngayChieuGioChieu}
+                    onClose={handleCloseNgayChieuGioChieu}
+                    onOpen={handleOpenNgayChieuGioChieu}
                     inputValue={selectedDate ? null : "Chọn ngày, giờ chiếu"} // khi chưa chọn thì "Chọn ngày, giờ chiếu" ghi đè lên value, khi đã chọn ngày thì return null để value={selectedDate} hiển thị ngày đã chọn
                     invalidDateMessage={
                       selectedDate ? "Invalid Date Format" : ""
@@ -390,14 +738,16 @@ export default function CreateShowtime() {
               fullWidth
             >
               <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
+                open={data.openCtr.giaVe}
+                onClose={handleCloseGiaVe}
+                onOpen={handleOpenGiaVe}
                 value={data.setGiaVe}
                 onChange={handleSelectGiaVe}
                 displayEmpty // hiển thị item đầu tiên
                 renderValue={(value) =>
                   `${value ? value + " vnđ" : "Chọn giá vé"}`
                 }
+                MenuProps={menuProps}
               >
                 {data.giaVeRender?.map((giaVe) => (
                   <MenuItem
@@ -431,14 +781,18 @@ export default function CreateShowtime() {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                onChange={(evt) => handleInputSearchChange(evt.target.value)}
               />
             </div>
           </div>
           {/* Tạo lịch chiếu  */}
           <div className={`col-12 col-md-6 ${classes.itemCtro}`}>
             <Button
+              disabled={!isReadyTaoLichChieu}
               classes={{
                 root: classes.btn,
+                // ẩn đi nút tạo lịch chiếu chọn xong values mới hiện
+                disabled: classes.btnDisabled,
               }}
               onClick={handleTaoLichChieu}
             >
@@ -447,6 +801,20 @@ export default function CreateShowtime() {
           </div>
         </div>
       </div>
+      {/* Danh sach rạp chiếu */}
+      <DataGrid
+        className={classes.rootDataGrid}
+        rows={onFilter()}
+        columns={columns}
+        pageSize={25}
+        rowsPerPageOptions={[10, 25, 50]}
+        loading={loadingTheaterList}
+        components={{
+          LoadingOverlay: CustomLoadingOverlay,
+          Toolbar: GridToolbar,
+        }}
+        sortModel={[{ field: "tenHeThongRap", sort: "asc" }]}
+      />
     </div>
   );
 }

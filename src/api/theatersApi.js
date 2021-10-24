@@ -12,7 +12,11 @@ const theatersApi = {
     return axiosClient.get(path);
   },
 
-  
+  //lấy toàn bộ thông tin lịch chiếu của tất cả hệ thống
+  getThongTinLichChieuHeThongRap: () => {
+    const path = "/api/QuanLyRap/LayThongTinLichChieuHeThongRap?maNhom=GP02";
+    return axiosClient.get(path);
+  },
 };
 
 export default theatersApi;

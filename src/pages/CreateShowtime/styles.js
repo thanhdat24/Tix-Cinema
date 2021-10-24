@@ -1,12 +1,64 @@
 import { fade, makeStyles } from "@material-ui/core/styles";
-// import { customScrollbar } from "../../styles/materialUi";
+import { customScrollbar } from "../../styles/materialUi";
 import { createTheme } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => {
   return {
     backgroundImg: {
-      backgroundColor: "gray",
+      animationTimingFunction: `${theme.transitions.easing.easeInOut}`,
+      animationIterationCount: "infinite",
+      animationDirection: "reverse",
+      animationName: "$myEffect",
+      backgroundImage: (theme) =>
+        theme.srcImg
+          ? `url('${theme.srcImg}')`
+          : "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
+      backgroundSize: (theme) => (theme.srcImg ? "auto" : "400% 400%"),
+      animationDuration: (theme) => (theme.srcImg ? "0s" : "5s"),
     },
+    "@keyframes myEffect": {
+      "0%": { backgroundPosition: "0% 50%" },
+      "50%": { backgroundPosition: "100% 50%" },
+      "100%": { backgroundPosition: "0% 50%" },
+    },
+
+    rootDataGrid: {
+      "& .Mui-odd": {
+        backgroundColor: "rgb(166, 213, 250)",
+        "&:hover": {
+          backgroundColor: "rgb(144, 202, 249) !important",
+        },
+      },
+      "& .MuiDataGrid-overlay": {
+        zIndex: 100,
+      },
+      "& .Mui-even": {
+        backgroundColor: "rgb(183, 223, 185)",
+        "&:hover": {
+          backgroundColor: "rgb(165, 215, 167)",
+        },
+      },
+      "& .MuiDataGrid-columnsContainer": {
+        backgroundColor: "rgb(255, 213, 153)",
+      },
+      "& .custom-header": {
+        backgroundColor: "rgb(255, 213, 153)",
+        "&:hover": {
+          backgroundColor: "rgb(255, 203, 127)",
+        },
+      },
+      "& .MuiDataGrid-colCellCheckbox": {
+        width: 48,
+        height: 55,
+        minWidth: 48,
+        maxHeight: 55,
+        backgroundColor: "rgb(255, 213, 153)",
+        "&:hover": {
+          backgroundColor: "rgb(255, 203, 127)",
+        },
+      },
+    },
+
     search: {
       verticalAlign: "bottom",
       position: "relative",
@@ -83,8 +135,9 @@ const useStyles = makeStyles((theme) => {
     paddingBtn: {
       padding: "18.4px 11px 18.4px",
     },
-    // popup menu
-    // menu: { maxHeight: 300, ...customScrollbar },
+
+    // format popup menu
+    menu: { maxHeight: 300, ...customScrollbar },
     menu__item: {
       width: "100%",
       minHeight: "auto",
@@ -141,6 +194,14 @@ const useStyles = makeStyles((theme) => {
         color: "#fff",
         padding: "6px 23px",
       },
+    },
+    btnDisabled: {
+      // css áp dụng khi disabled button
+      backgroundColor: "#4a4a4a",
+      border: "none",
+      textTransform: "uppercase",
+      borderRadius: "4px",
+      padding: "6px 23px",
     },
   };
 });
