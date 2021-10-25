@@ -19,12 +19,9 @@ import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminTemplate from "./templates/AdminTemplate/AdminTemplate";
 import MoviesManagement from "./pages/MoviesManagement/MoviesManagement";
 import CreateShowtime from "./pages/CreateShowtime/CreateShowtime";
+import UsersManagement from "./pages/UsersManagement/UsersManagement";
+
 export const history = createBrowserHistory();
-
-const CheckoutTemplateLazy = lazy(() =>
-  import("./templates/CheckoutTemplate/CheckoutTemplate")
-);
-
 function App() {
   return (
     <Router history={history}>
@@ -35,12 +32,20 @@ function App() {
         <HomeTemplate path="/news" exact Component={News} />
         <HomeTemplate path="/detail/:id" exact Component={Detail} />
         <Route path="/profile" exact component={Profile} />
-        <Route exact path={["/admin/movies", "/admin/showtimes"]}>
+        <Route
+          exact
+          path={["/admin/movies", "/admin/users", "/admin/showtimes"]}
+        >
           <AdminLayout>
             <AdminTemplate
               exact
               path="/admin/movies"
               component={MoviesManagement}
+            />
+            <AdminTemplate
+              exact
+              path="/admin/users"
+              component={UsersManagement}
             />
             <AdminTemplate
               exact
