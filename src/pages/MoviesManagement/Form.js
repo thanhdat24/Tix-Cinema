@@ -55,6 +55,8 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
   });
 
   const handleSubmit = (movieObj) => {
+   
+
     movieObj = {
       ...movieObj,
       ngayKhoiChieu: movieObj.ngayKhoiChieu.toLocaleDateString("en-GB"),
@@ -64,6 +66,7 @@ export default function FormInput({ selectedPhim, onUpdate, onAddMovie }) {
       onUpdate(movieObj);
       return;
     }
+    // Xoá đi các thuộc tính hide
     const newMovieObj = { ...movieObj };
     delete newMovieObj.maPhim;
     delete newMovieObj.biDanh;

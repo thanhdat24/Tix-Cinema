@@ -171,6 +171,8 @@ export default function MoviesManagement() {
     };
     selectedPhim.current = emtySelectedPhim;
     setOpenModal(true);
+
+    //trong obj movie có key hinhAnh là file nên phải chuyển sang formData
   };
 
   const handleInputSearchChange = (props) => {
