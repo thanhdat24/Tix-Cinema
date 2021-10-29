@@ -26,6 +26,7 @@ export default function UsersManagement() {
   const [usersListDisplay, setUsersListDisplay] = useState([]);
   const [valueSearch, setValueSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const clearSetSearch = useRef(0);
   const selectedUser = useRef(null);
   console.log("selectedUser", selectedUser);
 
@@ -118,6 +119,13 @@ export default function UsersManagement() {
 
   const handleClose = () => {
     setOpenModal(false);
+  };
+
+  const handleInputSearchChange = (props) => {
+    clearTimeout(clearSetSearch.current);
+    clearSetSearch.current = setTimeout(() => {
+      setValueSearch(props);
+    }, 500);
   };
   const onFilter = () => {
     const searchUsersListDisplay = usersListDisplay.filter((user) => {
@@ -309,6 +317,7 @@ export default function UsersManagement() {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                onChange={(evt) => handleInputSearchChange(evt.target.value)}
               />
             </div>
           </div>
