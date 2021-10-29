@@ -30,15 +30,15 @@ export class FilmManagementService extends baseService {
       formData.append(key, movieObj[key]);
     }
     return this.post(`/api/QuanLyPhim/ThemPhimUploadHinh`, formData);
-    // trong obj movie có key hinhAnh là file nên phải chuyển sang formData
+   
   };
 
   capNhatPhimUpload = (movie) => {
+    // trong obj movie có key hinhAnh là file nên phải chuyển sang formData
     const formData = new FormData();
     for (const key in movie) {
       formData.append(key, movie[key]);
     }
-    // return axiosClient.post(path, formData);
     return this.post(`/api/QuanLyPhim/CapNhatPhimUpload`, formData);
   };
 }

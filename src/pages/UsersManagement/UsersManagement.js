@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -7,17 +7,94 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import { DataGrid } from "@material-ui/data-grid";
-import useStyles from "./styles";
+import { useStyles, DialogTitle, DialogContent } from "./styles";
 import slugify from "slugify";
 import { useSnackbar } from "notistack";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addUserAction,
+  layDanhSachNguoiDungAction,
+} from "../../redux/actions/UserManagementAction";
+import Action from "./Action";
+import Form from "./Form";
+import { nanoid } from "nanoid";
 
+import { Dialog } from "@material-ui/core";
+import { resetMoviesManagement } from "../../redux/actions/FilmManagementAction";
 export default function UsersManagement() {
   const classes = useStyles();
   const [usersListDisplay, setUsersListDisplay] = useState([]);
   const [valueSearch, setValueSearch] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const selectedUser = useRef(null);
+  console.log("selectedUser", selectedUser);
 
   const { enqueueSnackbar } = useSnackbar();
+  const { usersList, loadingAddUser, successAddUser, errorAddUser } =
+    useSelector((state) => state.UserManagementReducer);
+  const dispatch = useDispatch();
+  console.log("usersList", usersList);
 
+  useEffect(() => {
+    // get list user lần đầu
+    if (!usersList || successAddUser || errorAddUser) {
+      dispatch(layDanhSachNguoiDungAction());
+    }
+  }, [successAddUser, errorAddUser]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetMoviesManagement());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (usersList) {
+      let newUsersListDisplay = usersList.map((user, i) => ({
+        ...user,
+        id: user.taiKhoan,
+      }));
+      setUsersListDisplay(newUsersListDisplay);
+    }
+  }, [usersList]);
+
+  const onAddUser = (userObj) => {
+    if (!loadingAddUser) {
+      dispatch(addUserAction(userObj));
+    }
+
+    setOpenModal(false);
+  };
+
+  const handleAddUser = () => {
+    const emtySelectedUser = {
+      taiKhoan: "",
+      matKhau: "",
+      hoTen: "",
+      email: "",
+      maNhom: "",
+      soDt: "",
+      maLoaiNguoiDung: "",
+    };
+    selectedUser.current = emtySelectedUser;
+    console.log("emtySelectedUser", emtySelectedUser);
+    setOpenModal(true);
+  };
+
+  useEffect(() => {
+    if (successAddUser) {
+      enqueueSnackbar(`Thêm thành công tài khoản: ${successAddUser.taiKhoan}`, {
+        variant: "success",
+      });
+    }
+    if (errorAddUser) {
+      enqueueSnackbar(errorAddUser, { variant: "error" });
+    }
+  }, [successAddUser, errorAddUser]);
+
+  const handleClose = () => {
+    setOpenModal(false);
+  };
   const onFilter = () => {
     const searchUsersListDisplay = usersListDisplay.filter((user) => {
       const matchTaiKhoan =
@@ -40,8 +117,17 @@ export default function UsersManagement() {
         slugify(user.hoTen ?? "", modifySlugify)?.indexOf(
           slugify(valueSearch, modifySlugify)
         ) !== -1;
+      const matchmaLoaiNguoiDung =
+        slugify(user.maLoaiNguoiDung ?? "", modifySlugify)?.indexOf(
+          slugify(valueSearch, modifySlugify)
+        ) !== -1;
       return (
-        matchTaiKhoan || matchMatKhau || matchEmail || matchSoDt || matchHoTen
+        matchTaiKhoan ||
+        matchMatKhau ||
+        matchEmail ||
+        matchSoDt ||
+        matchHoTen ||
+        matchmaLoaiNguoiDung
       );
     });
     return searchUsersListDisplay;
@@ -53,16 +139,17 @@ export default function UsersManagement() {
       [
         {
           field: "xoa",
-          headerName: "Xóa",
-          width: 120,
+          headerName: "Hành động",
+          width: 150,
+          renderCell: () => <Action />,
           headerAlign: "center",
-          align: "center",
+          align: "left",
           headerClassName: "custom-header",
         },
         {
           field: "taiKhoan",
           headerName: "Tài Khoản",
-          width: 200,
+          width: 180,
 
           headerAlign: "center",
           align: "left",
@@ -71,8 +158,7 @@ export default function UsersManagement() {
         {
           field: "matKhau",
           headerName: "Mật Khẩu",
-          width: 250,
-          editable: true,
+          width: 170,
           headerAlign: "center",
           align: "left",
           headerClassName: "custom-header",
@@ -80,8 +166,7 @@ export default function UsersManagement() {
         {
           field: "hoTen",
           headerName: "Họ tên",
-          width: 200,
-          editable: true,
+          width: 190,
           headerAlign: "center",
           align: "left",
           headerClassName: "custom-header",
@@ -90,7 +175,6 @@ export default function UsersManagement() {
           field: "email",
           headerName: "Email",
           width: 250,
-          editable: true,
           headerAlign: "center",
           align: "left",
           headerClassName: "custom-header",
@@ -99,7 +183,6 @@ export default function UsersManagement() {
           field: "soDt",
           headerName: "Số điện thoại",
           width: 180,
-          editable: true,
           type: "number",
           headerAlign: "center",
           align: "left",
@@ -107,20 +190,12 @@ export default function UsersManagement() {
         },
         {
           field: "maLoaiNguoiDung",
-          headerName: "isAdmin",
-          width: 145,
-          editable: true,
-          type: "boolean",
+          headerName: "Người dùng",
+          type: "text",
+          width: 160,
           headerAlign: "center",
           align: "center",
           headerClassName: "custom-header",
-        },
-        {
-          field: "ismodify",
-          width: 0,
-          type: "boolean",
-          headerClassName: "custom-header",
-          hide: true,
         },
       ],
     []
@@ -166,7 +241,9 @@ export default function UsersManagement() {
               variant="contained"
               color="primary"
               className={classes.button}
+              disabled={loadingAddUser}
               startIcon={<PersonAddIcon />}
+              onClick={handleAddUser}
             >
               thêm user
             </Button>
@@ -217,9 +294,27 @@ export default function UsersManagement() {
         columns={columns}
         pageSize={25}
         rowsPerPageOptions={[25, 50, 100]}
+        disableSelectionOnClick
         // bật checkbox
         checkboxSelection
       />
+
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        onClose={handleClose}
+        open={openModal}
+        // className={classes.rootDialog}
+      >
+        <DialogTitle onClose={() => setOpenModal(false)}>Thêm User</DialogTitle>
+        <DialogContent dividers>
+          <Form
+            selectedUser={selectedUser.current}
+            // onUpdate={onUpdate}
+            onAddUser={onAddUser}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

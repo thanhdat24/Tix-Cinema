@@ -20,7 +20,6 @@ import {
   UPDATE_NONEIMAGE_MOVIE_FAIL,
 } from "../actions/types/MovieType";
 
-
 export const getFilmManagementAction = () => {
   return async (dispatch) => {
     try {
@@ -34,7 +33,6 @@ export const getFilmManagementAction = () => {
     }
   };
 };
-
 
 export const getMovieListManagement = () => {
   return async (dispatch) => {
@@ -71,7 +69,6 @@ export const themPhimUploadHinhAction = (movieObj) => {
     }
   };
 };
-
 
 export const updateMovieUpload = (phimObj) => {
   return async (dispatch) => {

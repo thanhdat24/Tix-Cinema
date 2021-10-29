@@ -10,10 +10,17 @@ export class UserManagementService extends baseService {
     return this.post(`/api/QuanLyNguoiDung/DangNhap`, thongTinDangNhap);
   };
 
-  layThongTinNguoiDung = ()=>{
+  layThongTinNguoiDung = () => {
     return this.post(`/api/QuanLyNguoiDung/ThongTinTaiKhoan`);
-    
-  }
+  };
+
+  getDanhSachNguoiDung = () => {
+    return this.get(`/api/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP02`);
+  };
+
+  postThemNguoiDung = (user) => {
+    return this.post(`/api/QuanLyNguoiDung/ThemNguoiDung`, user);
+  };
 }
 
 export const userManagementService = new UserManagementService();
