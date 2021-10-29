@@ -9,6 +9,9 @@ import {
   GET_USER_LIST_SUCCESS,
   SET_THONG_TIN_NGUOI_DUNG,
   RESET_USER_MANAGEMENT,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAIL,
 } from "../actions/types/UserManagementType";
 
 // let user = {};
@@ -29,6 +32,10 @@ const stateDefault = {
   successAddUser: null,
   loadingAddUser: false,
   errorAddUser: null,
+
+  successDelete: "",
+  loadingDelete: false,
+  errorDelete: null,
 };
 
 export const UserManagementReducer = (state = stateDefault, action) => {
@@ -86,12 +93,41 @@ export const UserManagementReducer = (state = stateDefault, action) => {
         successAddUser: null,
       };
     }
+    case DELETE_USER_REQUEST: {
+      return {
+        ...state,
+        loadingDelete: true,
+        errorDelete: null,
+        successDelete: "",
+      };
+    }
+    case DELETE_USER_SUCCESS: {
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: action.payload,
+        errorDelete: null,
+      };
+    }
+    case DELETE_USER_FAIL: {
+      return {
+        ...state,
+        loadingDelete: false,
+        errorDelete: action.payload.error,
+        successDelete: "",
+      };
+    }
+
     case RESET_USER_MANAGEMENT: {
       return {
         ...state,
+        errorUsersList: null,
+
         successAddUser: null,
-        loadingAddUser: false,
         errorAddUser: null,
+
+        successDelete: "",
+        errorDelete: null,
       };
     }
     default:

@@ -5,10 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import Tooltip from "@material-ui/core/Tooltip";
 
-// import UseApiCheckIsMaPhimSetShowtime from "../../utilities/useApiCheckIsMaPhimSetShowtime";
-
-export default function ButtonDelete({ onDeleted, phimItem, onEdit }) {
-  // const isMovieSetShowtime = UseApiCheckIsMaPhimSetShowtime(phimItem.maPhim);
+export default function ButtonDelete({ onDeleted, userItem, onEdit }) {
   return (
     <>
       <Tooltip title="Xóa">
@@ -16,7 +13,7 @@ export default function ButtonDelete({ onDeleted, phimItem, onEdit }) {
           color="primary"
           // style={{ color: isMovieSetShowtime ? "#00000042" : "#f50057" }}
           style={{ color: "#f50057" }}
-          onClick={() => onDeleted(phimItem.maPhim)}
+          onClick={() => onDeleted(userItem.taiKhoan)}
         >
           <DeleteForeverIcon />
         </IconButton>
@@ -26,7 +23,7 @@ export default function ButtonDelete({ onDeleted, phimItem, onEdit }) {
         <IconButton
           color="primary"
           style={{ color: "#3f51b5" }}
-          onClick={() => onEdit(phimItem)}
+          // onClick={() => onEdit(userItem)}
         >
           <EditIcon />
         </IconButton>

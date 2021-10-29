@@ -21,6 +21,9 @@ export class UserManagementService extends baseService {
   postThemNguoiDung = (user) => {
     return this.post(`/api/QuanLyNguoiDung/ThemNguoiDung`, user);
   };
+  deleteUser = (taiKhoan) => {
+    return this.delete(`/api/QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=${taiKhoan}`);
+  };
 }
 
 export const userManagementService = new UserManagementService();

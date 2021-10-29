@@ -5,6 +5,8 @@ import {
   ADD_USER_REQUEST,
   ADD_USER_SUCCESS,
   DANG_NHAP_ACTION,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
   GET_USER_LIST_FAIL,
   GET_USER_LIST_REQUEST,
   GET_USER_LIST_SUCCESS,
@@ -51,30 +53,6 @@ export const layThongTinNguoiDungAction = (thongTinDangNhap) => {
   };
 };
 
-// export const layDanhSachNguoiDungAction = () => {
-//   return (dispatch) => {
-//     dispatch({
-//       type: GET_USER_LIST_REQUEST,
-//     });
-//     usersApi
-//       .getDanhSachNguoiDung()
-//       .then((result) => {
-//         dispatch({
-//           type: GET_USER_LIST_SUCCESS,
-//           payload: result.data.content,
-//         });
-//       })
-//       .catch((error) => {
-//         dispatch({
-//           type: GET_USER_LIST_FAIL,
-//           payload: {
-//             error: error.response?.data ? error.response.data : error.message,
-//           },
-//         });
-//       });
-//   };
-// };
-
 export const layDanhSachNguoiDungAction = () => {
   return async (dispatch) => {
     dispatch({
@@ -94,31 +72,6 @@ export const layDanhSachNguoiDungAction = () => {
   };
 };
 
-// export const addUserAction = (user) => {
-//   return (dispatch) => {
-//     dispatch({
-//       type: ADD_USER_REQUEST,
-//     });
-//     usersApi
-//       .postThemNguoiDung(user)
-//       .then((result) => {
-//         dispatch({
-//           type: ADD_USER_SUCCESS,
-//           payload: result.data.content,
-//         });
-//       })
-//       .catch((error) => {
-//         dispatch({
-//           type: ADD_USER_FAIL,
-//           payload: {
-//             error: error.response?.data ? error.response.data : error.message,
-//           },
-//         });
-//         console.log("error", error);
-//         console.log("error.response.data", error.response.data);
-//       });
-//   };
-// };
 export const addUserAction = (user) => {
   return async (dispatch) => {
     dispatch({
@@ -131,7 +84,28 @@ export const addUserAction = (user) => {
           type: ADD_USER_SUCCESS,
           payload: result.data.content,
         });
-        console.log("result.data.content", result.data.content);
+      }
+    } catch (error) {
+      console.log("error", error);
+      console.log("error", error.response?.data);
+      console.log("error.response", error.response);
+    }
+  };
+};
+
+export const deleteUser = (taiKhoanUser) => {
+  return async (dispatch) => {
+    dispatch({
+      type: DELETE_USER_REQUEST,
+    });
+    try {
+      const result = await userManagementService.deleteUser(taiKhoanUser);
+      if (result.data.statusCode === STATUS_CODE.SUCCESS) {
+        dispatch({
+          type: DELETE_USER_SUCCESS,
+          payload: result.data.content,
+        });
+        dispatch(layDanhSachNguoiDungAction());
       }
     } catch (error) {
       console.log("error", error);

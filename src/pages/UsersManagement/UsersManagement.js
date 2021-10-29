@@ -13,11 +13,11 @@ import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addUserAction,
+  deleteUser,
   layDanhSachNguoiDungAction,
 } from "../../redux/actions/UserManagementAction";
 import Action from "./Action";
 import Form from "./Form";
-import { nanoid } from "nanoid";
 
 import { Dialog } from "@material-ui/core";
 import { resetMoviesManagement } from "../../redux/actions/FilmManagementAction";
@@ -30,8 +30,15 @@ export default function UsersManagement() {
   console.log("selectedUser", selectedUser);
 
   const { enqueueSnackbar } = useSnackbar();
-  const { usersList, loadingAddUser, successAddUser, errorAddUser } =
-    useSelector((state) => state.UserManagementReducer);
+  const {
+    usersList,
+    loadingAddUser,
+    successAddUser,
+    errorAddUser,
+    loadingDeleteMovie,
+    successDelete,
+    errorDelete,
+  } = useSelector((state) => state.UserManagementReducer);
   const dispatch = useDispatch();
   console.log("usersList", usersList);
 
@@ -92,6 +99,23 @@ export default function UsersManagement() {
     }
   }, [successAddUser, errorAddUser]);
 
+  useEffect(() => {
+    if (successDelete) {
+      enqueueSnackbar(successDelete, { variant: "success" });
+      return;
+    }
+    if (errorDelete) {
+      enqueueSnackbar(errorDelete, { variant: "error" });
+    }
+  }, [successDelete, errorDelete]);
+  // xóa một phim
+  const handleDeleteOne = (taiKhoan) => {
+    if (!loadingDeleteMovie) {
+      // nếu click xóa liên tục một user
+      dispatch(deleteUser(taiKhoan)); // delete
+    }
+  };
+
   const handleClose = () => {
     setOpenModal(false);
   };
@@ -141,7 +165,9 @@ export default function UsersManagement() {
           field: "xoa",
           headerName: "Hành động",
           width: 150,
-          renderCell: () => <Action />,
+          renderCell: (params) => (
+            <Action onDeleted={handleDeleteOne} userItem={params.row} />
+          ),
           headerAlign: "center",
           align: "left",
           headerClassName: "custom-header",
@@ -292,6 +318,7 @@ export default function UsersManagement() {
         className={classes.rootDataGrid}
         rows={onFilter()}
         columns={columns}
+        loading={loadingAddUser || loadingDeleteMovie}
         pageSize={25}
         rowsPerPageOptions={[25, 50, 100]}
         disableSelectionOnClick

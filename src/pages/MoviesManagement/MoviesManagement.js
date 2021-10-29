@@ -91,20 +91,6 @@ export default function MoviesManagement() {
   }, [arrFilmDefault]);
 
   useEffect(() => {
-    // delete movie xong thì thông báo
-    if (errorDeleteMovie === "Xóa thành công nhưng backend return error") {
-      successDeleteMovie = "Xóa thành công !";
-    }
-    if (successDeleteMovie) {
-      enqueueSnackbar(successDeleteMovie, { variant: "success" });
-      return;
-    }
-    if (errorDeleteMovie) {
-      enqueueSnackbar(errorDeleteMovie, { variant: "error" });
-    }
-  }, [errorDeleteMovie, successDeleteMovie]);
-
-  useEffect(() => {
     if (successUpdateMovie) {
       callApiChangeImageSuccess.current = true;
       enqueueSnackbar(
@@ -130,6 +116,17 @@ export default function MoviesManagement() {
       enqueueSnackbar(errorAddUploadMovie, { variant: "error" });
     }
   }, [successAddUploadMovie, errorAddUploadMovie]);
+
+  useEffect(() => {
+    // delete movie xong thì thông báo
+    if (successDeleteMovie) {
+      enqueueSnackbar(successDeleteMovie, { variant: "success" });
+      return;
+    }
+    if (errorDeleteMovie) {
+      enqueueSnackbar(errorDeleteMovie, { variant: "error" });
+    }
+  }, [successDeleteMovie, errorDeleteMovie]);
 
   // xóa một phim
   const handleDeleteOne = (maPhim) => {
