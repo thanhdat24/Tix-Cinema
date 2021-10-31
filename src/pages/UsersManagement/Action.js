@@ -23,7 +23,7 @@ export default function ButtonDelete({ onDeleted, userItem, onEdit }) {
         <IconButton
           color="primary"
           style={{ color: "#3f51b5" }}
-          // onClick={() => onEdit(userItem)}
+          onClick={() => onEdit(userItem)}
         >
           <EditIcon />
         </IconButton>

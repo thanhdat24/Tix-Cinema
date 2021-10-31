@@ -12,6 +12,9 @@ import {
   DELETE_USER_REQUEST,
   DELETE_USER_SUCCESS,
   DELETE_USER_FAIL,
+  POST_UPDATE_USER_FAIL,
+  POST_UPDATE_USER_SUCCESS,
+  POST_UPDATE_USER_REQUEST,
 } from "../actions/types/UserManagementType";
 
 // let user = {};
@@ -36,6 +39,10 @@ const stateDefault = {
   successDelete: "",
   loadingDelete: false,
   errorDelete: null,
+
+  successUpdateUser: "",
+  loadingUpdateUser: false,
+  errorUpdateUser: null,
 };
 
 export const UserManagementReducer = (state = stateDefault, action) => {
@@ -117,17 +124,48 @@ export const UserManagementReducer = (state = stateDefault, action) => {
         successDelete: "",
       };
     }
+    case POST_UPDATE_USER_REQUEST: {
+      return {
+        ...state,
+        loadingUpdateUser: true,
+        errorUpdateUser: null,
+        successUpdateUser: null,
+      };
+    }
+    case POST_UPDATE_USER_SUCCESS: {
+      return {
+        ...state,
+        successUpdateUser: action.payload,
+        loadingUpdateUser: false,
+        errorUpdateUser: null,
+      };
+    }
+    case POST_UPDATE_USER_FAIL: {
+      return {
+        ...state,
+        errorUpdateUser: action.payload.error,
+        loadingUpdateUser: false,
+        successUpdateUser: null,
+      };
+    }
 
     case RESET_USER_MANAGEMENT: {
       return {
         ...state,
+        loadingUsersList: false,
         errorUsersList: null,
 
+        loadingAddUser: "",
         successAddUser: null,
         errorAddUser: null,
 
+        loadingDelete: false,
         successDelete: "",
         errorDelete: null,
+
+        loadingUpdateUser: false,
+        successUpdateUser: "",
+        errorUpdateUser: null,
       };
     }
     default:

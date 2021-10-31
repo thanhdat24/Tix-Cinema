@@ -10,17 +10,19 @@ import { DataGrid } from "@material-ui/data-grid";
 import { useStyles, DialogTitle, DialogContent } from "./styles";
 import slugify from "slugify";
 import { useSnackbar } from "notistack";
+import Chip from "@material-ui/core/Chip";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addUserAction,
   deleteUser,
   layDanhSachNguoiDungAction,
+  updateUser,
+  resetUserManagement,
 } from "../../redux/actions/UserManagementAction";
 import Action from "./Action";
 import Form from "./Form";
 
 import { Dialog } from "@material-ui/core";
-import { resetMoviesManagement } from "../../redux/actions/FilmManagementAction";
 export default function UsersManagement() {
   const classes = useStyles();
   const [usersListDisplay, setUsersListDisplay] = useState([]);
@@ -39,32 +41,65 @@ export default function UsersManagement() {
     loadingDeleteMovie,
     successDelete,
     errorDelete,
+    loadingUpdateUser,
+    successUpdateUser,
+    errorUpdateUser,
   } = useSelector((state) => state.UserManagementReducer);
   const dispatch = useDispatch();
   console.log("usersList", usersList);
 
   useEffect(() => {
     // get list user lần đầu
-    if (!usersList || successAddUser || errorAddUser) {
+    if (
+      !usersList ||
+      successAddUser ||
+      errorAddUser ||
+      successDelete ||
+      errorDelete ||
+      successUpdateUser ||
+      errorUpdateUser
+    ) {
       dispatch(layDanhSachNguoiDungAction());
     }
-  }, [successAddUser, errorAddUser]);
+  }, [
+    successAddUser,
+    errorAddUser,
+    successDelete,
+    errorDelete,
+    successUpdateUser,
+    errorUpdateUser,
+  ]);
 
   useEffect(() => {
     return () => {
-      dispatch(resetMoviesManagement());
+      dispatch(resetUserManagement());
     };
   }, []);
 
   useEffect(() => {
     if (usersList) {
-      let newUsersListDisplay = usersList.map((user, i) => ({
+      let newUsersListDisplay = usersList.map((user) => ({
         ...user,
         id: user.taiKhoan,
       }));
       setUsersListDisplay(newUsersListDisplay);
     }
   }, [usersList]);
+
+  const handleEdit = (userItem) => {
+    selectedUser.current = userItem;
+    setOpenModal(true);
+  };
+
+  const onUpdate = (userObj) => {
+    console.log("userObj", userObj);
+    if (loadingUpdateUser) {
+      return undefined;
+    }
+    setOpenModal(false);
+
+    dispatch(updateUser(userObj));
+  };
 
   const onAddUser = (userObj) => {
     if (!loadingAddUser) {
@@ -85,7 +120,6 @@ export default function UsersManagement() {
       maLoaiNguoiDung: "",
     };
     selectedUser.current = emtySelectedUser;
-    console.log("emtySelectedUser", emtySelectedUser);
     setOpenModal(true);
   };
 
@@ -101,6 +135,18 @@ export default function UsersManagement() {
   }, [successAddUser, errorAddUser]);
 
   useEffect(() => {
+    if (successUpdateUser) {
+      enqueueSnackbar(
+        `Update thành tài khoản: ${successUpdateUser.taiKhoan ?? ""}`,
+        { variant: "success" }
+      );
+    }
+    if (errorUpdateUser) {
+      enqueueSnackbar(`${errorUpdateUser ?? ""}`, { variant: "error" });
+    }
+  }, [successUpdateUser, errorUpdateUser]);
+
+  useEffect(() => {
     if (successDelete) {
       enqueueSnackbar(successDelete, { variant: "success" });
       return;
@@ -109,7 +155,8 @@ export default function UsersManagement() {
       enqueueSnackbar(errorDelete, { variant: "error" });
     }
   }, [successDelete, errorDelete]);
-  // xóa một phim
+
+  // xóa một user
   const handleDeleteOne = (taiKhoan) => {
     if (!loadingDeleteMovie) {
       // nếu click xóa liên tục một user
@@ -165,75 +212,88 @@ export default function UsersManagement() {
     return searchUsersListDisplay;
   };
 
-  const columns = useMemo(
-    () =>
-      // cột tài khoản không được chỉnh sửa, backend dùng "taiKhoan" để định danh user
-      [
-        {
-          field: "xoa",
-          headerName: "Hành động",
-          width: 150,
-          renderCell: (params) => (
-            <Action onDeleted={handleDeleteOne} userItem={params.row} />
-          ),
-          headerAlign: "center",
-          align: "left",
-          headerClassName: "custom-header",
-        },
-        {
-          field: "taiKhoan",
-          headerName: "Tài Khoản",
-          width: 180,
+  const columns =
+    // cột tài khoản không được chỉnh sửa, backend dùng "taiKhoan" để định danh user
+    [
+      {
+        field: "taiKhoan",
+        headerName: "Tài Khoản",
+        width: 180,
 
-          headerAlign: "center",
-          align: "left",
-          headerClassName: "custom-header",
-        },
-        {
-          field: "matKhau",
-          headerName: "Mật Khẩu",
-          width: 170,
-          headerAlign: "center",
-          align: "left",
-          headerClassName: "custom-header",
-        },
-        {
-          field: "hoTen",
-          headerName: "Họ tên",
-          width: 190,
-          headerAlign: "center",
-          align: "left",
-          headerClassName: "custom-header",
-        },
-        {
-          field: "email",
-          headerName: "Email",
-          width: 250,
-          headerAlign: "center",
-          align: "left",
-          headerClassName: "custom-header",
-        },
-        {
-          field: "soDt",
-          headerName: "Số điện thoại",
-          width: 180,
-          type: "number",
-          headerAlign: "center",
-          align: "left",
-          headerClassName: "custom-header",
-        },
-        {
-          field: "maLoaiNguoiDung",
-          headerName: "Người dùng",
-          type: "text",
-          width: 160,
-          headerAlign: "center",
-          align: "center",
-          headerClassName: "custom-header",
-        },
-      ],
-    []
-  );
+        headerAlign: "center",
+        align: "left",
+        headerClassName: "custom-header",
+      },
+      {
+        field: "matKhau",
+        headerName: "Mật Khẩu",
+        width: 170,
+        headerAlign: "center",
+        align: "left",
+        headerClassName: "custom-header",
+      },
+      {
+        field: "hoTen",
+        headerName: "Họ tên",
+        width: 190,
+        headerAlign: "center",
+        align: "left",
+        headerClassName: "custom-header",
+      },
+      {
+        field: "email",
+        headerName: "Email",
+        width: 250,
+        headerAlign: "center",
+        align: "left",
+        headerClassName: "custom-header",
+      },
+      {
+        field: "soDt",
+        headerName: "Số điện thoại",
+        width: 180,
+        type: "number",
+        headerAlign: "center",
+        align: "left",
+        headerClassName: "custom-header",
+      },
+      {
+        field: "maLoaiNguoiDung",
+        headerName: "Người dùng",
+        type: "text",
+        width: 160,
+        headerAlign: "center",
+        align: "center",
+        headerClassName: "custom-header",
+        renderCell: (params) => (
+          <Chip
+            label={params.value}
+            className={
+              params.value === "KhachHang"
+                ? `${classes.khachHang}`
+                : `${classes.quanTri}`
+            }
+            variant="outlined"
+          />
+        ),
+      },
+      {
+        field: "xoa",
+        headerName: "Hành động",
+        width: 150,
+        renderCell: (params) => (
+          <Action
+            onEdit={handleEdit}
+            onDeleted={handleDeleteOne}
+            userItem={params.row}
+          />
+        ),
+        headerAlign: "center",
+        align: "left",
+        headerClassName: "custom-header",
+      },
+    ];
+
   const modifySlugify = { lower: true, locale: "vi" };
 
   return (
@@ -246,6 +306,7 @@ export default function UsersManagement() {
               color="secondary"
               className={classes.button}
               startIcon={<DeleteIcon />}
+              disabled
             >
               Xoá user
             </Button>
@@ -256,6 +317,7 @@ export default function UsersManagement() {
               color="primary"
               className={classes.button}
               startIcon={<CloudUploadIcon />}
+              disabled
             >
               Cập nhật user
             </Button>
@@ -266,6 +328,7 @@ export default function UsersManagement() {
               color="primary"
               className={classes.button}
               startIcon={<CachedIcon />}
+              disabled
             >
               làm mới
             </Button>
@@ -302,6 +365,7 @@ export default function UsersManagement() {
             <Button
               variant="contained"
               className={`${classes.userModified} ${classes.button}`}
+              disabled
             >
               User đã chỉnh sửa
             </Button>
@@ -327,12 +391,19 @@ export default function UsersManagement() {
         className={classes.rootDataGrid}
         rows={onFilter()}
         columns={columns}
-        loading={loadingAddUser || loadingDeleteMovie}
+        // hiện loading khi
+        loading={loadingAddUser || loadingDeleteMovie || loadingUpdateUser}
         pageSize={25}
+        // hiện loading khi
         rowsPerPageOptions={[25, 50, 100]}
+        // css màu cho tài khoản QuanTri hoặc KhachHang: thay đổi tên class row dựa trên giá trị prop riêng biệt của row
+        getRowClassName={(params) => {
+          return params.row.maLoaiNguoiDung === "KhachHang"
+            ? "isadmin--KhachHang"
+            : "isadmin--QuanTri";
+        }}
         disableSelectionOnClick
-        // bật checkbox
-        checkboxSelection
+        getRowId={(row) => row.taiKhoan}
       />
 
       <Dialog
@@ -342,11 +413,16 @@ export default function UsersManagement() {
         open={openModal}
         // className={classes.rootDialog}
       >
-        <DialogTitle onClose={() => setOpenModal(false)}>Thêm User</DialogTitle>
+        <DialogTitle onClose={() => setOpenModal(false)}>
+          {" "}
+          {selectedUser?.current?.taiKhoan
+            ? `Sửa user: ${selectedUser?.current?.taiKhoan}`
+            : "Thêm user"}
+        </DialogTitle>
         <DialogContent dividers>
           <Form
             selectedUser={selectedUser.current}
-            // onUpdate={onUpdate}
+            onUpdate={onUpdate}
             onAddUser={onAddUser}
           />
         </DialogContent>

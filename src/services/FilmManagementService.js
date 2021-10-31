@@ -14,7 +14,7 @@ export class FilmManagementService extends baseService {
     return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GPID}`);
   };
 
-    getDanhSachPhim= () => {
+  getDanhSachPhim = () => {
     return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GPID}`);
   };
 
@@ -30,7 +30,6 @@ export class FilmManagementService extends baseService {
       formData.append(key, movieObj[key]);
     }
     return this.post(`/api/QuanLyPhim/ThemPhimUploadHinh`, formData);
-   
   };
 
   capNhatPhimUpload = (movie) => {

@@ -10,6 +10,8 @@ import {
   GET_USER_LIST_FAIL,
   GET_USER_LIST_REQUEST,
   GET_USER_LIST_SUCCESS,
+  POST_UPDATE_USER_REQUEST,
+  POST_UPDATE_USER_SUCCESS,
   RESET_USER_MANAGEMENT,
   SET_THONG_TIN_NGUOI_DUNG,
 } from "./types/UserManagementType";
@@ -107,6 +109,30 @@ export const deleteUser = (taiKhoanUser) => {
         });
         dispatch(layDanhSachNguoiDungAction());
       }
+    } catch (error) {
+      console.log("error", error);
+      console.log("error", error.response?.data);
+      console.log("error.response", error.response);
+    }
+  };
+};
+
+export const updateUser = (user) => {
+  return async (dispatch) => {
+    dispatch({
+      type: POST_UPDATE_USER_REQUEST,
+    });
+    try {
+      const result = await userManagementService.postCapNhapThongTinNguoiDung(
+        user
+      );
+      if (result.data.statusCode === STATUS_CODE.SUCCESS) {
+        dispatch({
+          type: POST_UPDATE_USER_SUCCESS,
+          payload: result.data.content,
+        });
+      }
+      console.log("result.data.content", result.data.content);
     } catch (error) {
       console.log("error", error);
       console.log("error", error.response?.data);

@@ -7,7 +7,7 @@ import TextField from "./Textfield";
 import Button from "@material-ui/core/Button";
 import Select from "./Select";
 import { GPID } from "../../util/settings/config";
-export default function FormInput({ selectedUser, onAddUser }) {
+export default function FormInput({ selectedUser, onUpdate, onAddUser }) {
   const typeUser = {
     KhachHang: "Khách Hàng",
     QuanTri: "Quản Trị",
@@ -32,12 +32,10 @@ export default function FormInput({ selectedUser, onAddUser }) {
   });
 
   const handleSubmit = (userObj) => {
-    userObj = {
-      ...userObj,
-      maNhom: "GP02",
-    };
-
-    console.log("userObj", userObj);
+    if (selectedUser.taiKhoan) {
+      onUpdate(userObj);
+      return;
+    }
     onAddUser(userObj);
   };
   return (
@@ -57,7 +55,13 @@ export default function FormInput({ selectedUser, onAddUser }) {
       {() => (
         <Form className="m-2">
           <div className="form-group">
-            <TextField name="taiKhoan" fullWidth label="Tài khoản" />
+            <TextField
+              name="taiKhoan"
+              fullWidth
+              label="Tài khoản"
+              // Không cho người dùng chỉnh sửa trường tài khoản
+              disabled={selectedUser.taiKhoan}
+            />
           </div>
           <div className="form-group">
             <TextField fullWidth name="hoTen" label="Họ tên" />
@@ -91,30 +95,15 @@ export default function FormInput({ selectedUser, onAddUser }) {
             />
           </div>
           <div className="container mb-3">
-            <div className="row">
-              <div className="col-6">
-                <Button
-                  fullWidth
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disableElevation
-                >
-                  Submit
-                </Button>
-              </div>
-              <div className="col-6">
-                <Button
-                  fullWidth
-                  text="Reset"
-                  variant="contained"
-                  color="default"
-                  disableElevation
-                >
-                  Reset
-                </Button>
-              </div>
-            </div>
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              color="primary"
+              disableElevation
+            >
+              Submit
+            </Button>
           </div>
         </Form>
       )}

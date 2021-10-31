@@ -9,17 +9,6 @@ import { createTheme } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => {
   return {
     rootDataGrid: {
-      "& .MuiDataGrid-cellEditing": {
-        backgroundColor: "rgb(255,215,115, 0.19)",
-        color: "#1a3e72",
-      },
-      "& .Mui-error": {
-        backgroundColor: `rgb(126,10,15,0.1})`,
-        color: "#750f0f",
-      },
-      "& .MuiDataGrid-columnsContainer": {
-        backgroundColor: "rgb(255, 213, 153)",
-      },
       "& .custom-header": {
         backgroundColor: "rgb(255, 213, 153)",
         "&:hover": {
@@ -37,19 +26,19 @@ const useStyles = makeStyles((theme) => {
         },
       },
 
-      "& .isadmin--true": {
-        backgroundColor: "rgb(250, 179, 174)",
-        "&:hover": {
-          backgroundColor: "rgb(249, 161, 154)",
-        },
-      },
-      "& .isadmin--false": {
+      "& .isadmin--KhachHang": {
         backgroundColor: "rgb(183, 223, 185)",
         "&:hover": {
           backgroundColor: "rgb(165, 215, 167)",
         },
       },
-      "& .ismodify--true": {
+      "& .isadmin--QuanTri": {
+        backgroundColor: "rgb(250, 179, 174)",
+        "&:hover": {
+          backgroundColor: "rgb(249, 161, 154)",
+        },
+      },
+      "& .ismodify--KhachHang": {
         backgroundColor: "rgb(166, 213, 250)",
         "&:hover": {
           backgroundColor: "rgb(144, 202, 249) !important",
@@ -59,6 +48,16 @@ const useStyles = makeStyles((theme) => {
     button: {
       width: "100%",
       height: "100%",
+    },
+    quanTri: {
+      color: "#cf1322",
+      backgroundColor: "#fff1f0",
+      borderColor: "#ffa39e",
+    },
+    khachHang: {
+      color: "#389e0d",
+      backgroundColor: "#f6ffed",
+      borderColor: "#b7eb8f",
     },
     userQuanTri: {
       backgroundColor: "rgb(250, 179, 174)",

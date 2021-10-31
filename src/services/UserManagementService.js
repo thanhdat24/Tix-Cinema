@@ -22,7 +22,12 @@ export class UserManagementService extends baseService {
     return this.post(`/api/QuanLyNguoiDung/ThemNguoiDung`, user);
   };
   deleteUser = (taiKhoan) => {
-    return this.delete(`/api/QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=${taiKhoan}`);
+    return this.delete(
+      `/api/QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=${taiKhoan}`
+    );
+  };
+  postCapNhapThongTinNguoiDung = (user) => {
+    return this.post(`/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung`, user);
   };
 }
 
