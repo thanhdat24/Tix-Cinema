@@ -15,6 +15,7 @@ import {
   POST_UPDATE_USER_FAIL,
   POST_UPDATE_USER_SUCCESS,
   POST_UPDATE_USER_REQUEST,
+  LOGOUT,
 } from "../actions/types/UserManagementType";
 
 // let user = {};
@@ -166,6 +167,13 @@ export const UserManagementReducer = (state = stateDefault, action) => {
         loadingUpdateUser: false,
         successUpdateUser: "",
         errorUpdateUser: null,
+      };
+    }
+    case LOGOUT: {
+      localStorage.removeItem(USER_LOGIN);
+      return {
+        ...state,
+        userLogin: null,
       };
     }
     default:

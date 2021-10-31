@@ -16,14 +16,19 @@ import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { useHistory, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { LOGOUT } from "../../../../redux/actions/types/UserManagementType";
 
 export default function Header(props) {
+  // const { currentUser } = useSelector((state) => state.authReducer);
   const headMenu = [
     { nameLink: "Lịch chiếu", id: "lichchieu" },
     { nameLink: "Cụm rạp", id: "cumrap" },
     { nameLink: "Tin tức", id: "tintuc" },
     { nameLink: "Ứng dụng", id: "ungdung" },
   ];
+  const dispatch = useDispatch();
+
   const { userLogin } = useSelector((state) => state.UserManagementReducer);
   const [openDrawer, setOpenDrawer] = useState(false);
   const classes = useStyles({ openDrawer });
@@ -34,6 +39,12 @@ export default function Header(props) {
   const handleRegister = () => {
     history.push("/register", location.pathname);
   };
+
+  const handleLogout = () => {
+    // setOpenDrawer(false);
+    dispatch({ type: LOGOUT });
+  };
+
   return (
     <header className={classes.root}>
       {/* START HEADER */}
@@ -97,7 +108,7 @@ export default function Header(props) {
                 <ListItem
                   button
                   classes={{ root: classes.itemAuth }}
-                  onClick={userLogin}
+                  onClick={handleLogout}
                 >
                   <ListItemText primary="Đăng Xuất" />
                 </ListItem>
@@ -117,44 +128,14 @@ export default function Header(props) {
                 <ListItem
                   button
                   classes={{ root: classes.itemAuth }}
-                  // onClick={handleRegister}
+                  onClick={handleRegister}
                 >
-                  <ListItemText primary="Đăng Ký" onClick={handleRegister} />
+                  <ListItemText primary="Đăng Ký" />
                 </ListItem>
               </List>
             )}
           </div>
         </Toolbar>
-
-        {/* <div className="items-center flex-shrink-0 hidden lg:flex">
-          <button
-            onClick={() => {
-              history.push("/login");
-            }}
-            className="self-center px-8 py-3 rounded"
-          >
-            Sign in
-          </button>
-          <button className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-coolGray-900">
-            Sign up
-          </button>
-        </div> */}
-        {/* <button className="p-4 lg:hidden">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-6 h-6 dark:text-coolGray-100"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button> */}
       </AppBar>
 
       {/* content open menu*/}
@@ -193,7 +174,7 @@ export default function Header(props) {
             <ListItem
               button
               classes={{ root: classes.listItem }}
-              // onClick={handleLogin}
+              onClick={handleLogin}
             >
               <ListItemIcon classes={{ root: classes.icon }}>
                 <AccountCircleIcon fontSize="large" />
@@ -222,7 +203,9 @@ export default function Header(props) {
           ))}
 
           {userLogin ? (
-            <span className={classes.itemMenu}>Đăng Xuất</span>
+            <span className={classes.itemMenu} onClick={handleLogout}>
+              Đăng Xuất
+            </span>
           ) : (
             <span className={classes.itemMenu}>Đăng Ký</span>
           )}
