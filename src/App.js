@@ -5,15 +5,16 @@ import { HomeTemplate } from "./templates/HomeTemplate/HomeTemplate";
 import Home from "./pages/Home/Home";
 import Contact from "./pages/Contact/Contact";
 import News from "./pages/News/News";
-import Register from "./templates/HomeTemplate/Layout/Register/Register";
+// import Register from "./templates/HomeTemplate/Layout/Register/Register";
 import Detail from "./pages/Detail/Detail";
 import Profile from "./pages/Profile/Profile";
 
 import CheckoutTemplate from "./templates/CheckoutTemplate/CheckoutTemplate";
 import React, { Suspense, lazy } from "react";
 import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
 import Loading from "./components/Loading/Loading";
-import { UserTemplate } from "./templates/UserTemplate/UserTemplate";
+import AuthLayout from "./layouts/AuthLayout/AuthLayout";
 import Checkout from "./pages/BookingTicket/Checkout/Checkout";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminTemplate from "./templates/AdminTemplate/AdminTemplate";
@@ -55,8 +56,12 @@ function App() {
           </AdminLayout>
         </Route>
         <CheckoutTemplate path="/checkout/:id" exact Component={Checkout} />
-        <Route path="/login" exact component={Login} />
-        <Route path="/register" exact component={Register} />
+        <Route exact path={["/login", "/register"]}>
+          <AuthLayout>
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+          </AuthLayout>
+        </Route>
         <HomeTemplate path="/home" exact Component={Home} />
       </Switch>
     </Router>
