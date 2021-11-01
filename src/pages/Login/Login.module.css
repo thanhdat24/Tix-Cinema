@@ -1,36 +1,14 @@
 .signin {
-  max-width: 360px;
-  padding: 40px 32px 30px;
-  height: fit-content;
-  z-index: 1000;
-  position: relative;
-  border-radius: 6px;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(20, 50, 93, 0.9),
-    rgba(8, 22, 48, 0.9)
-  );
-  font-size: 1rem;
+  color: #fff;
+  padding: 20px 20px;
 }
-
-.background {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  background-size: contain;
-  justify-content: center;
-  background-image: url(../../image/bgAuth.jpg);
-  background-position: center;
-}
-
 .logoTix {
   width: 209px;
   cursor: pointer;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 13px;
+  margin-top: 20px;
 }
 .text {
   text-align: center;
