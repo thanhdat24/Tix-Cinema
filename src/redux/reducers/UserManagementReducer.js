@@ -16,6 +16,9 @@ import {
   POST_UPDATE_USER_SUCCESS,
   POST_UPDATE_USER_REQUEST,
   LOGOUT,
+  REGISTER_SUCCESS,
+  REGISTER_REQUEST,
+  RESET_ERROR_LOGIN_REGISTER,
 } from "../actions/types/UserManagementType";
 
 // let user = {};
@@ -44,6 +47,10 @@ const stateDefault = {
   successUpdateUser: "",
   loadingUpdateUser: false,
   errorUpdateUser: null,
+
+  responseRegister: null,
+  loadingRegister: false,
+  errorRegister: null,
 };
 
 export const UserManagementReducer = (state = stateDefault, action) => {
@@ -149,7 +156,27 @@ export const UserManagementReducer = (state = stateDefault, action) => {
         successUpdateUser: null,
       };
     }
+    case LOGOUT: {
+      localStorage.removeItem(USER_LOGIN);
+      return {
+        ...state,
+        userLogin: null,
+        error: null,
+        loading: false,
+        responseRegister: null,
+      };
+    }
+    case REGISTER_REQUEST: {
+      return { ...state, loadingRegister: true, errorRegister: null };
+    }
 
+    case REGISTER_SUCCESS: {
+      return {
+        ...state,
+        responseRegister: action.payload,
+        loadingRegister: false,
+      };
+    }
     case RESET_USER_MANAGEMENT: {
       return {
         ...state,
@@ -169,11 +196,11 @@ export const UserManagementReducer = (state = stateDefault, action) => {
         errorUpdateUser: null,
       };
     }
-    case LOGOUT: {
-      localStorage.removeItem(USER_LOGIN);
+    case RESET_ERROR_LOGIN_REGISTER: {
       return {
         ...state,
-        userLogin: null,
+        errorRegister: null,
+        errorLogin: null,
       };
     }
     default:

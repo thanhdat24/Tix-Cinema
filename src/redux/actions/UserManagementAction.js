@@ -12,6 +12,9 @@ import {
   GET_USER_LIST_SUCCESS,
   POST_UPDATE_USER_REQUEST,
   POST_UPDATE_USER_SUCCESS,
+  REGISTER_REQUEST,
+  REGISTER_SUCCESS,
+  RESET_ERROR_LOGIN_REGISTER,
   RESET_USER_MANAGEMENT,
   SET_THONG_TIN_NGUOI_DUNG,
 } from "./types/UserManagementType";
@@ -28,15 +31,39 @@ export const layThongTinDangNhapAction = (thongTinDangNhap) => {
           thongTinDangNhap: result.data.content,
         });
       }
-      // Chuyển hướng trang Login về trang trước đó
-      history.goBack();
-      console.log("result", result);
     } catch (error) {
       console.log("error", error.response?.data);
     }
   };
 };
 
+export const registerAction = (thongTinDangKy) => {
+  return async (dispatch) => {
+    dispatch({
+      type: REGISTER_REQUEST,
+    });
+    try {
+      const result = await userManagementService.dangKy(thongTinDangKy);
+
+      if (result.data.statusCode === STATUS_CODE.SUCCESS) {
+        dispatch({
+          type: REGISTER_SUCCESS,
+          payload: result.data.content,
+        });
+      }
+    } catch (error) {
+      console.log("error", error.response?.data);
+    }
+  };
+};
+
+export const resetErrorLoginRegister = () => {
+  return (dispatch) => {
+    dispatch({
+      type: RESET_ERROR_LOGIN_REGISTER,
+    });
+  };
+};
 export const layThongTinNguoiDungAction = (thongTinDangNhap) => {
   return async (dispatch) => {
     try {
