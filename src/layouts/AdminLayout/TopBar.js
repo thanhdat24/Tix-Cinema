@@ -10,15 +10,17 @@ import {
 import PropTypes from "prop-types";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import NotificationsIcon from "@material-ui/icons/NotificationsOutlined";
 import InputIcon from "@material-ui/icons/Input";
 import MenuIcon from "@material-ui/icons/Menu";
+import { LOGOUT } from "../../redux/actions/types/UserManagementType";
 
 const TopBar = ({ onMobileNavOpen, ...rest }) => {
   //   const [notifications] = useState([]);
   const dispatch = useDispatch();
   const history = useHistory();
+  let location = useLocation();
 
   const handleClickLogo = () => {
     // dispatch({ type: LOADING_BACKTO_HOME });
@@ -27,6 +29,10 @@ const TopBar = ({ onMobileNavOpen, ...rest }) => {
     }, 50);
   }; // style constant
 
+  const handleLogout = () => {
+    dispatch({ type: LOGOUT });
+    history.push("/login", location.pathname);
+  };
   return (
     <AppBar elevation={0} position="static" {...rest}>
       <Toolbar>
@@ -52,10 +58,7 @@ const TopBar = ({ onMobileNavOpen, ...rest }) => {
             </Badge>
           </IconButton>
           <Tooltip title="Đăng xuất">
-            <IconButton
-              color="inherit"
-              //   onClick={() => dispatch({ type: LOGOUT })}
-            >
+            <IconButton color="inherit" onClick={handleLogout}>
               <InputIcon />
             </IconButton>
           </Tooltip>

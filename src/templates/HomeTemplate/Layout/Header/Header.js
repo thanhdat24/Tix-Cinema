@@ -41,10 +41,15 @@ export default function Header(props) {
   };
 
   const handleLogout = () => {
-    // setOpenDrawer(false);
+    setOpenDrawer(false);
     dispatch({ type: LOGOUT });
+    history.push("/login", location.pathname);
   };
 
+  const handleUser = () => {
+    history.push("/profile");
+    setOpenDrawer(false);
+  };
   return (
     <header className={classes.root}>
       {/* START HEADER */}
@@ -94,7 +99,7 @@ export default function Header(props) {
                 <ListItem
                   button
                   classes={{ root: clsx(classes.itemAuth, classes.divide) }}
-                  // onClick={handleUser}
+                  onClick={handleUser}
                 >
                   <ListItemIcon classes={{ root: classes.icon }}>
                     <Avatar
@@ -143,7 +148,7 @@ export default function Header(props) {
         className={classes.drawer}
         anchor="right"
         // onClose={handleDrawerClose}
-        // open={openDrawer}
+        open={openDrawer}
         classes={{
           paper: classes.drawerPaper,
         }}

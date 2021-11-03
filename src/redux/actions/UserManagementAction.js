@@ -161,8 +161,7 @@ export const updateUser = (user) => {
       }
       console.log("result.data.content", result.data.content);
     } catch (error) {
-      console.log("error", error);
-      console.log("error", error.response?.data);
+      console.log("error.response?.data", error.response?.data);
       console.log("error.response", error.response);
     }
   };

@@ -7,7 +7,6 @@ import Contact from "./pages/Contact/Contact";
 import News from "./pages/News/News";
 // import Register from "./templates/HomeTemplate/Layout/Register/Register";
 import Detail from "./pages/Detail/Detail";
-import Profile from "./pages/Profile/Profile";
 
 import CheckoutTemplate from "./templates/CheckoutTemplate/CheckoutTemplate";
 import React, { Suspense, lazy } from "react";
@@ -21,6 +20,7 @@ import AdminTemplate from "./templates/AdminTemplate/AdminTemplate";
 import MoviesManagement from "./pages/MoviesManagement/MoviesManagement";
 import CreateShowtime from "./pages/CreateShowtime/CreateShowtime";
 import UsersManagement from "./pages/UsersManagement/UsersManagement";
+import UserProfile from "./pages/UserProfile/UserProfile";
 
 export const history = createBrowserHistory();
 function App() {
@@ -32,7 +32,8 @@ function App() {
         <HomeTemplate path="/contact" exact Component={Contact} />
         <HomeTemplate path="/news" exact Component={News} />
         <HomeTemplate path="/detail/:id" exact Component={Detail} />
-        <Route path="/profile" exact component={Profile} />
+        <HomeTemplate path="/profile" exact Component={UserProfile} />
+
         <Route
           exact
           path={["/admin/movies", "/admin/users", "/admin/showtimes"]}
