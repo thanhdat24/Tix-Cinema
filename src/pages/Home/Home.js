@@ -5,7 +5,7 @@ import HomeMenu from "./HomeMenu/HomeMenu";
 import MultipleRowSlick from "../../components/RSlick/MultipleRowSlick";
 import { getFilmManagementAction } from "../../redux/actions/FilmManagementAction";
 import { layDanhSachHeThongRapAction } from "../../redux/actions/CinemaManagementAction";
-import HomeCarousel from "../../templates/HomeTemplate/Layout/HomeCarousel/HomeCarousel";
+import Carousel from "../Carousel/Carousel";
 export default function Home(props) {
   const { arrFilm } = useSelector((state) => state.FilmManagementReducer);
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ export default function Home(props) {
   }, []);
   return (
     <div>
-      <HomeCarousel />
+      <Carousel />
       <section className="text-gray-600 body-font">
         <div className="container px-36 py-24 mx-auto ">
           <MultipleRowSlick arrFilm={arrFilm} />
