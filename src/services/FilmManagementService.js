@@ -11,11 +11,11 @@ export class FilmManagementService extends baseService {
   };
 
   layDanhSachPhim = () => {
-    return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GPID}`);
+    return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP09`);
   };
 
   getDanhSachPhim = () => {
-    return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GPID}`);
+    return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP09`);
   };
 
   deleteMovie = (maPhim) => {
