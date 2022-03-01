@@ -5,6 +5,7 @@ export default function UseThoiLuongDanhGia(maPhim) {
   const url = `http://movieapi.cyberlearn.vn/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`;
   useEffect(() => {
     let getInfoFlimCancel = Axios.CancelToken.source(); // Axios cung cấp, để cancel gọi api khi component bị hủy(bấm chuyển cụm rạp khác)
+
     const loadData = async () => {
       try {
         // bắt lỗi khi get API, nếu có lỗi thì vào catch
@@ -13,9 +14,9 @@ export default function UseThoiLuongDanhGia(maPhim) {
         });
         setData({
           thoiLuong:
-            response.data?.heThongRapChieu?.[0]?.cumRapChieu?.[0]
+            response.data?.content.heThongRapChieu?.[0]?.cumRapChieu?.[0]
               ?.lichChieuPhim?.[0]?.thoiLuong, // tách ra thời lượng phim
-          danhGia: response.data.danhGia,
+          danhGia: response.data.content.danhGia,
         });
       } catch (error) {
         // vào đây khi có lỗi get api hoặc khi cancel thành công

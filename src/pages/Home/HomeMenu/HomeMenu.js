@@ -2,8 +2,9 @@ import React, { Fragment } from "react";
 import { Tabs, Radio, Space } from "antd";
 import { NavLink } from "react-router-dom";
 import moment from "moment";
+import style from "./HomeMenu.module.css";
+import ThoiLuongDanhGia from "../../../components/ThoiLuongDanhGia/thoiLuongDanhGia";
 const { TabPane } = Tabs;
-
 // Sử dụng PureComponent để giảm bớt việc render lại
 export default class Demo extends React.PureComponent {
   state = {
@@ -33,6 +34,7 @@ export default class Demo extends React.PureComponent {
             {heThongRap.lstCumRap?.map((cumRap, index) => {
               return (
                 <TabPane
+                  className={`${style["TabPane"]}`}
                   tab={
                     <div className="flex flex-row">
                       <img
@@ -51,7 +53,6 @@ export default class Demo extends React.PureComponent {
                             <p>{cumRap.diaChi}</p>
                           )}
                         </p>
-                        <p className=" text-red-500">[chi tiết]</p>
                       </div>
                     </div>
                   }
@@ -63,7 +64,11 @@ export default class Demo extends React.PureComponent {
                       <Fragment key={index}>
                         <div className="flex flex-row py-2 px-6 mb-4">
                           <img
-                            style={{ height: 100, width: 100 }}
+                            style={{
+                              height: 50,
+                              width: 50,
+                              objectFit: "cover",
+                            }}
                             src={film.hinhAnh}
                             alt={film.tenPhim}
                             onError={(e) => {
@@ -71,26 +76,30 @@ export default class Demo extends React.PureComponent {
                               e.target.src = "https://picsum.photos/100/100";
                             }}
                           />
-                          <div className="">
-                            <h3 className="ml-3 font-bold">{film.tenPhim}</h3>
-                            <div className="grid grid-cols-3 gap-2">
-                              {film.lstLichChieuTheoPhim
-                                ?.slice(0, 10)
-                                .map((lichChieu, index) => {
-                                  return (
-                                    <NavLink
-                                      className="ml-3 text-lg text-green-600 font-semibold hover:text-red-500"
-                                      to={`/checkout/${lichChieu.maLichChieu}`}
-                                      key={index}
-                                    >
-                                      {moment(
-                                        lichChieu.ngayChieuGioChieu
-                                      ).format("hh:mm A")}
-                                    </NavLink>
-                                  );
-                                })}
-                            </div>
+                          <div className={`${style["phim__text"]}`}>
+                            <p className={`${style["phim__text_name"]}`}>
+                              {film.tenPhim}
+                            </p>
+                            <ThoiLuongDanhGia maPhim={film.maPhim} />
+                            {/* phải tách riêng ra vì thời lượng và đánh giá lấy từ một api khác */}
                           </div>
+                        </div>
+                        <div className={`${style["groupTime"]}`}>
+                          {film.lstLichChieuTheoPhim
+                            ?.slice(0, 10)
+                            .map((lichChieu, index) => {
+                              return (
+                                <NavLink
+                                  className="ml-3 text-base text-green-600 font-semibold hover:text-red-500"
+                                  to={`/checkout/${lichChieu.maLichChieu}`}
+                                  key={index}
+                                >
+                                  {moment(lichChieu.ngayChieuGioChieu).format(
+                                    "hh:mm A"
+                                  )}
+                                </NavLink>
+                              );
+                            })}
                         </div>
                         <hr />
                       </Fragment>
@@ -109,7 +118,9 @@ export default class Demo extends React.PureComponent {
     const { tabPosition } = this.state;
     return (
       <Fragment>
-        <Tabs tabPosition={tabPosition}>{this.renderHeThongRap()}</Tabs>
+        <Tabs className={`${style["tabs"]}`} tabPosition={tabPosition}>
+          {this.renderHeThongRap()}
+        </Tabs>
       </Fragment>
     );
   }

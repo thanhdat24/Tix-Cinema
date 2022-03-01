@@ -177,6 +177,7 @@ export const UserManagementReducer = (state = stateDefault, action) => {
         loadingRegister: false,
       };
     }
+    
     case RESET_USER_MANAGEMENT: {
       return {
         ...state,

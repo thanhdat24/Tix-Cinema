@@ -16,7 +16,6 @@ export default function ListSeat(props) {
   const { danhSachPhongVe, danhsachGheDangDat, danhSachKhachDangDat } =
     useSelector((state) => state.BookingTicketManagementReducer);
   const { danhSachGhe, thongTinPhim } = danhSachPhongVe;
-  console.log("danhsachGheDangDat", danhsachGheDangDat);
   const [widthSeat, setWidthSeat] = useState(0);
 
   const dispatch = useDispatch();

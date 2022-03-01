@@ -7,6 +7,7 @@ import Showtime from "../Showtime/Showtime";
 import { getFilmManagementAction } from "../../redux/actions/FilmManagementAction";
 import { layDanhSachHeThongRapAction } from "../../redux/actions/CinemaManagementAction";
 import Carousel from "../Carousel/Carousel";
+import Seperate from "../../components/Seperate"
 export default function Home(props) {
   const { arrFilm } = useSelector((state) => state.FilmManagementReducer);
   const dispatch = useDispatch();
@@ -22,14 +23,15 @@ export default function Home(props) {
   return (
     <div>
       <Carousel />
-      <section className="text-gray-600 body-font">
+      <section className="text-gray-600 body-font" id="lichchieu">
         <div className="container px-36 py-24 mx-auto ">
           <Showtime arrFilm={arrFilm} />
         </div>
       </section>
-      <div className="mx-32">
+      <section className="mx-32" id="cumrap">
+        <Seperate />
         <HomeMenu heThongRapChieu={heThongRapChieu} />
-      </div>
+      </section>
     </div>
   );
 }

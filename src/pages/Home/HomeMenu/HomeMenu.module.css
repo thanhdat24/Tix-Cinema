@@ -1,0 +1,28 @@
+.tabs {
+  border: 1px solid #ebebec;
+  margin: auto !important;
+  max-width: 969px;
+  max-height: 705px;
+  border-radius: 4px;
+}
+.phim__text {
+  width: calc(100% - 50px);
+  padding-top: 6px;
+  padding-left: 15px;
+}
+.phim__text_name {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.groupTime {
+  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.TabPane {
+  flex: 0 0 60%;
+  height: 705px;
+  overflow-y: auto;
+  border-left: 1px solid rgb(235, 235, 236);
+}

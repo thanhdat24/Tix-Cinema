@@ -18,6 +18,8 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { useHistory, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { LOGOUT } from "../../../../redux/actions/types/UserManagementType";
+import { scroller } from "react-scroll";
+import { LOADING_BACKTO_HOME } from "../../../../redux/actions/types/LoadingType";
 
 export default function Header(props) {
   // const { currentUser } = useSelector((state) => state.authReducer);
@@ -46,6 +48,20 @@ export default function Header(props) {
     history.push("/login", location.pathname);
   };
 
+  const handleClickLink = (id) => {
+    setOpenDrawer(false);
+    if (location.pathname === "/") {
+      scroller.scrollTo(id, {
+        duration: 800,
+        smooth: "easeInOutQuart",
+      });
+    } else {
+      dispatch({ type: LOADING_BACKTO_HOME });
+      setTimeout(() => {
+        history.push("/", id);
+      }, 50);
+    }
+  };
   const handleUser = () => {
     history.push("/profile");
     setOpenDrawer(false);
@@ -84,7 +100,7 @@ export default function Header(props) {
                 <span
                   key={link.id}
                   className={classes.link}
-                  // onClick={() => handleClickLink(link.id)}
+                  onClick={() => handleClickLink(link.id)}
                 >
                   {link.nameLink}
                 </span>
