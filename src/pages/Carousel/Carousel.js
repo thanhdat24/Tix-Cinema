@@ -6,6 +6,7 @@ import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounde
 import { useHistory } from "react-router-dom";
 import homeCarouselData from "../../constants/homeCarouselData";
 import "./Carousel.css";
+import SearchStickets from "./SearchTickets";
 
 export default function Carousel() {
   const history = useHistory();
@@ -59,6 +60,7 @@ export default function Carousel() {
           );
         })}
       </Slider>
+      <SearchStickets />
     </div>
   );
 }

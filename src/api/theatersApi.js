@@ -17,6 +17,11 @@ const theatersApi = {
     const path = "/api/QuanLyRap/LayThongTinLichChieuHeThongRap?maNhom=GP02";
     return axiosClient.get(path);
   },
+  //thông tin của 1 bộ phim, kèm theo thông tin các rạp có chiếu phim đó
+  getThongTinLichChieuPhim: (maPhim) => {
+    const path = `/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`;
+    return axiosClient.get(path);
+  },
 };
 
 export default theatersApi;
