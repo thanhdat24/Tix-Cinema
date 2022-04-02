@@ -18,6 +18,7 @@ import {
   POST_UPDATE_MOVIE_REQUEST,
   POST_UPDATE_MOVIE_SUCCESS,
   RESET_MOVIE_MANAGEMENT,
+  SAVE_BEFOREINSTALLPROMPT_EVENT,
 } from "../actions/types/MovieType";
 
 const initialState = {
@@ -42,6 +43,8 @@ const initialState = {
   loadingAddUploadMovie: false,
   errorAddUploadMovie: null,
   filmDetail: {},
+
+  saveBeforeinstallpromptEvent: null,
 };
 
 const FilmManagementReducer = (state = initialState, action) => {
@@ -170,6 +173,10 @@ const FilmManagementReducer = (state = initialState, action) => {
         loadingAddUploadMovie: false,
         errorAddUploadMovie: null,
       };
+    }
+    case SAVE_BEFOREINSTALLPROMPT_EVENT: {
+      state.saveBeforeinstallpromptEvent = action.payload.event;
+      return state;
     }
     default:
       return state;

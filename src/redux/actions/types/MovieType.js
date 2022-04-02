@@ -20,3 +20,6 @@ export const POST_UPDATE_MOVIE_REQUEST = "POST_UPDATE_MOVIE_REQUEST";
 export const POST_UPDATE_MOVIE_SUCCESS = "POST_UPDATE_MOVIE_SUCCESS";
 
 export const POST_UPDATE_MOVIE_FAIL = "POST_UPDATE_MOVIE_FAIL";
+
+export const SAVE_BEFOREINSTALLPROMPT_EVENT = "SAVE_BEFOREINSTALLPROMPT_EVENT"; // Lưu lại event beforeinstallprompt để hiện lại màn hình install pwa khi cần
+

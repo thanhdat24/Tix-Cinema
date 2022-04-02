@@ -9,6 +9,7 @@ import { getFilmManagementAction } from "../../redux/actions/FilmManagementActio
 import { layDanhSachHeThongRapAction } from "../../redux/actions/CinemaManagementAction";
 import Carousel from "../Carousel/Carousel";
 import Seperate from "../../components/Seperate";
+import HomeApp from "../HomeApp/HomeApp";
 export default function Home(props) {
   const { arrFilm } = useSelector((state) => state.FilmManagementReducer);
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ export default function Home(props) {
         <HomeMenu heThongRapChieu={heThongRapChieu} />
       </section>
       <News />
+      <HomeApp />
     </div>
   );
 }

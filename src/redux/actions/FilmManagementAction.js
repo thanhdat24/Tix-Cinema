@@ -2,11 +2,8 @@ import { filmManagementService } from "../../services/FilmManagementService";
 import { SET_CAROUSEL } from "./types/CarouselType";
 import { SET_LIST_FILM } from "./types/FilmManagementType";
 import {
-  ADD_MOVIE_UPLOAD_FAIL,
   ADD_MOVIE_UPLOAD_SUCCESS,
-  GET_MOVIE_LIST_FAIL,
   GET_MOVIE_LIST_SUCCESS,
-  POST_UPDATE_MOVIE_FAIL,
   POST_UPDATE_MOVIE_SUCCESS,
   POST_UPDATE_MOVIE_REQUEST,
   RESET_MOVIE_MANAGEMENT,
@@ -15,9 +12,7 @@ import {
   DELETE_MOVIE_REQUEST,
   DELETE_MOVIE_SUCCESS,
   DELETE_MOVIE_FAIL,
-  UPDATE_NONEIMAGE_MOVIE_REQUEST,
-  UPDATE_NONEIMAGE_MOVIE_SUCCESS,
-  UPDATE_NONEIMAGE_MOVIE_FAIL,
+  SAVE_BEFOREINSTALLPROMPT_EVENT,
 } from "../actions/types/MovieType";
 
 export const getFilmManagementAction = () => {
@@ -115,6 +110,15 @@ export const resetMoviesManagement = () => {
   return (dispatch) => {
     dispatch({
       type: RESET_MOVIE_MANAGEMENT,
+    });
+  };
+};
+
+export const saveBeforeinstallpromptEvent = (event) => {
+  return (dispatch) => {
+    dispatch({
+      type: SAVE_BEFOREINSTALLPROMPT_EVENT,
+      payload: { event },
     });
   };
 };
