@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Film from "../../components/Film/Film";
 import HomeMenu from "./HomeMenu/HomeMenu";
+import News from "../News/News";
 import MultipleRowSlick from "../../components/RSlick/MultipleRowSlick";
 import Showtime from "../Showtime/Showtime";
 import { getFilmManagementAction } from "../../redux/actions/FilmManagementAction";
 import { layDanhSachHeThongRapAction } from "../../redux/actions/CinemaManagementAction";
 import Carousel from "../Carousel/Carousel";
-import Seperate from "../../components/Seperate"
+import Seperate from "../../components/Seperate";
 export default function Home(props) {
   const { arrFilm } = useSelector((state) => state.FilmManagementReducer);
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ export default function Home(props) {
         <Seperate />
         <HomeMenu heThongRapChieu={heThongRapChieu} />
       </section>
+      <News />
     </div>
   );
 }
