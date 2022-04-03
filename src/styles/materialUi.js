@@ -13,5 +13,30 @@ const customScrollbar = {
     background: "rgb(0 0 0 / 30%)",
   },
 };
+const underLine = {
+  position: "relative",
+  "&:after": {
+    content: "''",
+    position: "absolute",
+    bottom: "0",
+    left: "50%",
+    width: "calc(100% - 40px)",
+    transform: "translateX(-50%)",
+    borderBottom: "1px solid rgba(238,238,238,.88)",
+  },
+};
 
-export { customScrollbar };
+const underLineDashed = {
+  position: "relative",
+  "&:after": {
+    content: "''",
+    position: "absolute",
+    bottom: "0",
+    left: "50%",
+    width: "100%",
+    transform: "translateX(-50%)",
+    borderBottom: "1px dashed #e9e9e9;",
+  },
+};
+
+export { customScrollbar, underLine, underLineDashed };

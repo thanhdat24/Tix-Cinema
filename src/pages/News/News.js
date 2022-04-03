@@ -10,9 +10,9 @@ import useStyles from './style'
 import Seperate from '../../components/Seperate';
 
 function TabPanel(props) {
-  const { isMobile, children, value, index, ...other } = props;
+  const { children, value, index, ...other } = props;
   return (<div hidden={value !== index}  {...other} >
-    <Box p={(isMobile && index === 0) ? 1 : 3}>
+    <Box p={( index === 0) ? 1 : 3}>
       {children}
     </Box>
   </div>

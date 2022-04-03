@@ -6,7 +6,7 @@ import Home from "./pages/Home/Home";
 import Contact from "./pages/Contact/Contact";
 import News from "./pages/News/News";
 // import Register from "./templates/HomeTemplate/Layout/Register/Register";
-import Detail from "./pages/Detail/Detail";
+import MovieDetail from "./pages/MovieDetail/index";
 
 import CheckoutTemplate from "./templates/CheckoutTemplate/CheckoutTemplate";
 import React, { Suspense, lazy } from "react";
@@ -31,7 +31,7 @@ function App() {
         <HomeTemplate path="/" exact Component={Home} />
         <HomeTemplate path="/contact" exact Component={Contact} />
         <HomeTemplate path="/news" exact Component={News} />
-        <HomeTemplate path="/detail/:id" exact Component={Detail} />
+        <HomeTemplate path="/detail/:maPhim" exact Component={MovieDetail} />
         <HomeTemplate path="/profile" exact Component={UserProfile} />
 
         <Route

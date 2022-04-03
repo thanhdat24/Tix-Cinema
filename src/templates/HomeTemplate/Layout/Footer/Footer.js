@@ -225,7 +225,7 @@ export default function Footer() {
                 href="https://www.cgv.vn/"
               >
                 <img
-                  src="assets/img/logo-connect/AGRIBANK.png"
+                  src="./assets/img/logo-connect/AGRIBANK.png"
                   alt=""
                   className={classes.logo}
                 />
