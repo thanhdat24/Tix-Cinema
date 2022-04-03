@@ -1,5 +1,13 @@
+import { nanoid } from "nanoid";
+
 export const DOMAIN = "http://movieapi.cyberlearn.vn";
-// export const FAKE_AVATAR = `https://i.pravatar.cc/300?u=${avtIdUser}`;
+const currentUser = localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user"))
+  : null;
+const avtIdUser = currentUser ? currentUser?.avtIdUser : nanoid(10);
+export { avtIdUser };
+
+export const FAKE_AVATAR = `https://i.pravatar.cc/300?u=${avtIdUser}`;
 export const TOKEN = "accessToken ";
 export const GPID = "GP02";
 

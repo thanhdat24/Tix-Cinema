@@ -1,121 +1,119 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  datGheAction,
-  layDanhSachPhongVeAction,
-} from "../../../redux/actions/BookingTicketManagementAction";
+import React, { useRef, useEffect, useState } from "react";
+
 import SeatIcon from "@material-ui/icons/CallToActionRounded";
+import { useSelector, useDispatch } from "react-redux";
+import Countdown from "../Countdown";
 
 import useStyles from "./style";
-import { logoTheater } from "../../../constants/theaterData";
+import { colorTheater, logoTheater } from "../../../constants/theaterData";
+import {
+  CHANGE_LISTSEAT,
+  SET_ALERT_OVER10,
+} from "../../../redux/actions/types/BookingTicketManagementType";
 import TenCumRap from "../../../components/TenCumRap";
 import formatDate from "../../../util/settings/formatDate";
 
-export default function ListSeat(props) {
-  const { userLogin } = useSelector((state) => state.UserManagementReducer);
-  const { danhSachPhongVe, danhsachGheDangDat, danhSachKhachDangDat } =
-    useSelector((state) => state.BookingTicketManagementReducer);
-  const { danhSachGhe, thongTinPhim } = danhSachPhongVe;
+export default function ListSeat() {
+  const {
+    listSeat,
+    danhSachPhongVe: { thongTinPhim },
+  } = useSelector((state) => state.BookingTicketManagementReducer);
+  const domToSeatElement = useRef(null);
   const [widthSeat, setWidthSeat] = useState(0);
-
-  const dispatch = useDispatch();
+  console.log("thongTinPhim", thongTinPhim);
   const classes = useStyles({
+    color: colorTheater[thongTinPhim?.tenCumRap.slice(0, 3).toUpperCase()],
     modalLeftImg: thongTinPhim?.hinhAnh,
+
     widthLabel: widthSeat / 2,
   });
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // Gọi hàm tạo ra 1 async function
-    const action = layDanhSachPhongVeAction(props.match.params.id);
-    // dispatch function
-    dispatch(action);
-
-    //Vừa vào trang load tất cả ghế của các người khác đang đặt
-    // connection.invoke("loadDanhSachGhe", props.match.params.id);
-
-    // Load danh sách ghế đang đặt từ server về (lắng nghe tín hiệu từ server trả về)
-    // connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
-    //   console.log("danhSachGheKhachDat", dsGheKhachDat);
-
-    //   // //Bước 1: Loại mình ra khỏi danh sách
-    //   // dsGheKhachDat = dsGheKhachDat.filter(
-    //   //   (item) => item.taiKhoan !== userLogin.taiKhoan
-    //   // );
-
-    //   // //Bước 2: gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung
-    //   // let arrGheKhachDat = dsGheKhachDat.reduce((result, item, index) => {
-    //   //   // Biến chuỗi danhSachGhe thành mảng sử dụng JSON.parse
-    //   //   let arrGhe = JSON.parse(item.danhSachGhe);
-
-    //   //   return { ...result, ...arrGhe };
-    //   // }, []);
-    //   // // Loại bỏ những phần tử trùng trong mảng
-    //   // // Đưa dữ liệu ghế khách đặt cập nhập redux
-    //   // arrGheKhachDat = _.uniqBy(arrGheKhachDat, "maGhe");
-
-    //   // // Đưa dữ liệu ghế khách đặt về redux
-    //   // dispatch({ type: "GHE_KHACH_DAT", arrGheKhachDat });
-
-    //   // //Cài đặt sự kiện khi reload trang
-    //   // window.addEventListener("beforeunload", clearGhe);
-
-    //   // return () => {
-    //   //   clearGhe();
-    //   //   window.removeEventListener("beforeunload", clearGhe);
-    //   // };
-    // });
+    // khởi tạo event lắng nghe "resize"
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-  // const clearGhe = function (event) {
-  //   connection.invoke("huyDat", userLogin.taiKhoan, props.match.params.id);
-  // };
+  useEffect(() => {
+    handleResize();
+  }, [listSeat]); // sau khi có listSeat thì run handleResize để lấy giá trị đầu tiên
+  const handleResize = () => {
+    setWidthSeat(domToSeatElement?.current?.offsetWidth);
+  };
 
-  console.log({ danhSachPhongVe });
-  // render hàng ghế
-  const renderSeats = () => {
-    return danhSachGhe.map((ghe, index) => {
-      let classGheVip = ghe.loaiGhe === "Vip" ? "gheVip" : "";
-      let classGheDaDat = ghe.daDat === true ? "gheDaDat" : "";
-      let classGheDangDat = "";
-      // Kiểm tra từng ghế render xem có trong mảng ghế đang đặt ?
-      let indexGheDD = danhsachGheDangDat.findIndex(
-        (gheDD) => gheDD.maGhe === ghe.maGhe
-      );
-      if (indexGheDD !== -1) {
-        classGheDangDat = "gheDangDat";
+  const handleSelectedSeat = (seatSelected) => {
+    if (seatSelected.daDat) {
+      // click vào ghế đã có người chọn
+      return;
+    }
+    // đổi lại giá trị selected của ghế đã chọn
+    let newListSeat = listSeat.map((seat) => {
+      if (seatSelected.maGhe === seat.maGhe) {
+        return { ...seat, selected: !seat.selected };
       }
-
-      // Kiểm tra từng ghế render xem có phải ghế khách đặt hay không
-      let classGheKhachDat = "";
-      let indexGheKD = danhSachKhachDangDat.findIndex(
-        (gheKD) => gheKD.maGhe === ghe.maGhe
-      );
-      if (indexGheKD !== -1) {
-        classGheKhachDat = "gheKhachDat";
+      return seat;
+    });
+    // cập nhật lại danh sách hiển thị ghế đã chọn
+    const newListSeatSelected = newListSeat?.reduce(
+      (newListSeatSelected, seat) => {
+        if (seat.selected) {
+          return [...newListSeatSelected, seat.label];
+        }
+        return newListSeatSelected;
+      },
+      []
+    );
+    // thông báo nếu chọn quá 10 ghế
+    if (newListSeatSelected.length === 11) {
+      dispatch({
+        type: SET_ALERT_OVER10,
+      });
+      return;
+    }
+    // cập nhật lại danhSachVe dùng để booking
+    const danhSachVe = newListSeat?.reduce((danhSachVe, seat) => {
+      if (seat.selected) {
+        return [...danhSachVe, { maGhe: seat.maGhe, giaVe: seat.giaVe }];
       }
-
-      let classGheDaDuocDat = "";
-      if (userLogin.taiKhoan === ghe.taiKhoanNguoiDat) {
-        classGheDaDuocDat = "gheDaDuocDat";
+      return danhSachVe;
+    }, []);
+    // cập nhật biến kiểm tra đã có ghế nào được chọn chưa
+    const isSelectedSeat = newListSeatSelected.length > 0 ? true : false;
+    // tính lại tổng tiền
+    const amount = newListSeat?.reduce((amount, seat) => {
+      if (seat.selected) {
+        return (amount += seat.giaVe);
       }
-
-      return (
-        <Fragment>
-          {" "}
-          <button
-            onClick={() => {
-              dispatch(datGheAction(ghe, props.match.params.id));
-            }}
-            disabled={ghe.daDat || classGheKhachDat !== ""}
-            className={`ghe ${classGheVip} ${classGheDaDat} ${classGheDangDat} ${classGheDaDuocDat} ${classGheKhachDat}`}
-            key={index}
-          >
-            {ghe.daDat}
-          </button>
-          {(index + 1) % 16 === 0 ? <br /> : ""}
-        </Fragment>
-      );
+      return amount;
+    }, 0);
+    dispatch({
+      type: CHANGE_LISTSEAT,
+      payload: {
+        listSeat: newListSeat,
+        isSelectedSeat,
+        listSeatSelected: newListSeatSelected,
+        danhSachVe,
+        amount,
+      },
     });
   };
+  const color = (seat) => {
+    let color;
+    if (seat.loaiGhe === "Thuong") {
+      color = "#3e515d";
+    }
+    if (seat.loaiGhe === "Vip") {
+      color = "#f7b500";
+    }
+    if (seat.selected) {
+      color = "#44c020";
+    }
+    if (seat.daDat) {
+      color = "#99c5ff";
+    }
+    return color;
+  };
+
   return (
     <main className={classes.listSeat}>
       {/* thông tin phim */}
@@ -135,55 +133,104 @@ export default function ListSeat(props) {
         </div>
         <div className={classes.countDown}>
           <p className={classes.timeTitle}>Thời gian giữ ghế</p>
-          {/* <Countdown /> */}
+          <Countdown />
         </div>
       </div>
+
       <div className={classes.overflowSeat}>
         <div className={classes.invariantWidth}>
           {/* mô phỏng màn hình */}
           <img
-            className=""
+            className={classes.screen}
             src="/assets/img/bookticket/screen.png"
             alt="screen"
           />
-          <div>{renderSeats()}</div>
-
-          {/* thông tin các loại ghế */}
-          <div className={classes.noteSeat}>
-            <div className={classes.typeSeats}>
-              <div>
-                <SeatIcon style={{ color: "#3e515d", fontSize: 27 }} />
-                <p>Ghế thường</p>
+          {/* danh sách ghế */}
+          <div className={classes.seatSelect}>
+            {listSeat?.map((seat, i) => (
+              <div
+                className={classes.seat}
+                key={seat.maGhe}
+                ref={domToSeatElement}
+              >
+                {/* label A B C ... đầu mỗi row */}
+                {(i === 0 || i % 16 === 0) && (
+                  <p className={classes.label}>{seat.label.slice(0, 1)}</p>
+                )}
+                {/* số ghế thứ tự của ghế */}
+                {seat.selected && (
+                  <p className={classes.seatName}>
+                    {Number(seat.label.slice(1)) < 10
+                      ? seat.label.slice(2)
+                      : seat.label.slice(1)}
+                  </p>
+                )}
+                {/* label ghế đã có người đặt */}
+                {seat.daDat && (
+                  <img
+                    className={classes.seatLocked}
+                    src="/assets/img/bookticket/notchoose.png"
+                    alt="notchoose"
+                  />
+                )}
+                {/* icon ghế */}
+                <SeatIcon
+                  style={{ color: color(seat) }}
+                  className={classes.seatIcon}
+                />
+                {/* đường viền chỉ vùng ghế */}
+                {seat.label === "E08" && (
+                  <img
+                    className={classes.viewCenter}
+                    src="/assets/img/bookticket/seatcenter.png"
+                    alt="seatcenter"
+                  />
+                )}
+                {/* vùng bắt sự kiện click */}
+                <div
+                  className={classes.areaClick}
+                  onClick={() => handleSelectedSeat(seat)}
+                ></div>
               </div>
-              <div>
-                <SeatIcon style={{ color: "#f7b500", fontSize: 27 }} />
-                <p>Ghế vip</p>
-              </div>
-              <div>
-                <SeatIcon style={{ color: "#44c020", fontSize: 27 }} />
-                <p>Ghế đang chọn</p>
-              </div>
-              <div>
-                <div style={{ position: "relative" }}>
-                  <p className={classes.posiX}>x</p>
-                  <SeatIcon style={{ color: "#99c5ff", fontSize: 27 }} />
-                </div>
-                <p>Ghế đã được mua</p>
-              </div>
-            </div>
-            <div className={classes.positionView}>
-              <span>
-                <span className={classes.linecenter} />
-                <span>Ghế trung tâm</span>
-              </span>
-              <span className={classes.line}>
-                <span className={classes.linebeautiful} />
-                <span>Ghế Đẹp</span>
-              </span>
-            </div>
+            ))}
           </div>
         </div>
       </div>
+      {/* thông tin các loại ghế */}
+      <div className={classes.noteSeat}>
+        <div className={classes.typeSeats}>
+          <div>
+            <SeatIcon style={{ color: "#3e515d", fontSize: 27 }} />
+            <p>Ghế thường</p>
+          </div>
+          <div>
+            <SeatIcon style={{ color: "#f7b500", fontSize: 27 }} />
+            <p>Ghế vip</p>
+          </div>
+          <div>
+            <SeatIcon style={{ color: "#44c020", fontSize: 27 }} />
+            <p>Ghế đang chọn</p>
+          </div>
+          <div>
+            <div style={{ position: "relative" }}>
+              <p className={classes.posiX}>x</p>
+              <SeatIcon style={{ color: "#99c5ff", fontSize: 27 }} />
+            </div>
+            <p>Ghế đã được mua</p>
+          </div>
+        </div>
+        <div className={classes.positionView}>
+          <span>
+            <span className={classes.linecenter} />
+            <span>Ghế trung tâm</span>
+          </span>
+          <span className={classes.line}>
+            <span className={classes.linebeautiful} />
+            <span>Ghế Đẹp</span>
+          </span>
+        </div>
+      </div>
+
       {/* modalleft */}
       <div className={classes.modalleft}>
         <div className={classes.opacity}></div>

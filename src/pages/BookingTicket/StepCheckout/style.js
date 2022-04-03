@@ -1,8 +1,6 @@
-import StepConnector, {
-  stepConnectorClasses,
-} from "@mui/material/StepConnector";
-import { makeStyles } from "@material-ui/core";
-import { styled } from "@mui/material/styles";
+import { makeStyles, withStyles } from "@material-ui/core";
+import StepConnector from "@material-ui/core/StepConnector";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -59,27 +57,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+const ColorlibConnector = withStyles({
+  alternativeLabel: {
     top: 22,
   },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
+  active: {
+    "& $line": {
       backgroundImage: "linear-gradient(223deg,#b4ec51 0,#429321 100%)",
     },
   },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
+  completed: {
+    "& $line": {
       backgroundImage: "linear-gradient(223deg,#b4ec51 0,#429321 100%)",
     },
   },
-  [`& .${stepConnectorClasses.line}`]: {
+  line: {
     height: 3,
     border: 0,
-    backgroundColor:
-      theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
+    backgroundColor: "#eaeaf0",
     borderRadius: 1,
   },
-}));
+})(StepConnector);
 
 export { useStyles, ColorlibConnector };

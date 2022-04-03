@@ -14,7 +14,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Loading from "./components/Loading/Loading";
 import AuthLayout from "./layouts/AuthLayout/AuthLayout";
-import Checkout from "./pages/BookingTicket/Checkout/Checkout";
+import BookTickets from "./pages/BookingTicket";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminTemplate from "./templates/AdminTemplate/AdminTemplate";
 import MoviesManagement from "./pages/MoviesManagement/MoviesManagement";
@@ -56,7 +56,11 @@ function App() {
             />
           </AdminLayout>
         </Route>
-        <CheckoutTemplate path="/checkout/:id" exact Component={Checkout} />
+        <CheckoutTemplate
+          path="/checkout/:maLichChieu"
+          exact
+          Component={BookTickets}
+        />
         <Route exact path={["/login", "/register"]}>
           <AuthLayout>
             <Route exact path="/login" component={Login} />

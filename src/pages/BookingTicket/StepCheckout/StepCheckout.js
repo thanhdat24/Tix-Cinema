@@ -1,29 +1,29 @@
-import { Tabs } from "antd";
-import Step from "@mui/material/Step";
+import React from "react";
+
+import clsx from "clsx";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
 import SeatIcon from "@material-ui/icons/CallToActionRounded";
 import PaymentIcon from "@material-ui/icons/Payment";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import clsx from "clsx";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { history } from "../../../App";
-import { CHANGE_STATUS_ACTIVE } from "../../../redux/actions/types/BookingTicketManagementType";
 import { useStyles, ColorlibConnector } from "./style";
-import Stepper from "@mui/material/Stepper";
-import StepLabel from "@mui/material/StepLabel";
+import { FAKE_AVATAR } from "../../../util/settings/config";
 
-import { styled } from "@mui/material/styles";
-export default function StepCheckout(props) {
-  const { TabPane } = Tabs;
-  const { statusActive } = useSelector(
-    (state) => state.BookingTicketManagementReducer
-  );
-
-  const { userLogin } = useSelector((state) => state.UserManagementReducer);
-  const dispatch = useDispatch();
-  const steps = ["CHỌN GHẾ", "THANH TOÁN", "KẾT QUẢ ĐẶT VÉ"];
+export default function Stepcheckout() {
+  const history = useHistory();
   const classes = useStyles();
+  const activeStep = useSelector(
+    (state) => state.BookingTicketManagementReducer.activeStep
+  );
+  const userLogin = useSelector(
+    (state) => state.UserManagementReducer.userLogin
+  );
+  const steps = ["CHỌN GHẾ", "THANH TOÁN", "KẾT QUẢ ĐẶT VÉ"];
+
   function StepIcon(props) {
     const { active, completed } = props;
     const icons = {
@@ -45,11 +45,12 @@ export default function StepCheckout(props) {
   const handleUser = () => {
     history.push("/profile");
   };
+
   return (
     <div className={classes.root}>
       <Stepper
         alternativeLabel
-        activeStep={statusActive}
+        activeStep={activeStep}
         className={classes.stepper}
         connector={<ColorlibConnector />}
       >
@@ -65,16 +66,13 @@ export default function StepCheckout(props) {
         ))}
       </Stepper>
       <div className={classes.account} onClick={handleUser}>
-        <img
-          className={classes.avatar}
-          src={`https://i.pravatar.cc/300?u=${userLogin.taiKhoan}`}
-          alt="avatar"
-        />
+        <img src={FAKE_AVATAR} alt="avatar" className={classes.avatar} />
         <p className={classes.hoTen}>{userLogin.hoTen}</p>
       </div>
     </div>
   );
 }
+
 // ColorlibConnector: đường gạch ngang nối giữa các bước
 // activeStep: xác định step hiện tại
 // StepIconComponent: node làm icon đại diện, mặc định nhận vào boolean active, completed, error và number: icon để css tương ứng

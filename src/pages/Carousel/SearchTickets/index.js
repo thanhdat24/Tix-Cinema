@@ -152,7 +152,6 @@ export default function SearchStickets() {
       .getThongTinLichChieuPhim(phim.maPhim)
       .then((result) => {
         setData((data) => ({ ...data, startRequest: false }));
-        console.log(" result.data.heThongRapChieu", result);
 
         const cumRapChieuData = result.data.content.heThongRapChieu.reduce(
           (colect, item) => {
@@ -160,10 +159,8 @@ export default function SearchStickets() {
           },
           []
         );
-        console.log("cumRapChieuData", cumRapChieuData);
 
         const rapRender = cumRapChieuData.map((item) => item.tenCumRap);
-        console.log("rapRender", rapRender);
         setData((data) => ({
           ...data,
           rapRender,

@@ -6,7 +6,7 @@ const axiosClient = axios.create({
 });
 axiosClient.interceptors.request.use((config) => {
   //tất cả request đều phải qua đây
-  const user = localStorage.getItem("user");
+  const user = localStorage.getItem("USER_LOGIN");
   if (user) {
     // nếu có đăng nhập thì thực hiện
     const { accessToken } = JSON.parse(user);
